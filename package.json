@@ -1,0 +1,35 @@
+{
+  "name": "fastify-http-forward",
+  "version": "0.0.1",
+  "description": "forward your HTTP request to another server, for fastify",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard | snazzy && tap test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mcollina/fastify-http-forward.git"
+  },
+  "keywords": [
+    "fastify",
+    "http",
+    "forward",
+    "proxy"
+  ],
+  "author": "Matteo Collina <hello@matteocollina.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mcollina/fastify-http-forward/issues"
+  },
+  "homepage": "https://github.com/mcollina/fastify-http-forward#readme",
+  "devDependencies": {
+    "fastify": "^0.37.0",
+    "pre-commit": "^1.2.2",
+    "snazzy": "^7.0.0",
+    "standard": "^10.0.3",
+    "tap": "^11.0.1"
+  },
+  "dependencies": {
+    "fastify-plugin": "^0.2.1"
+  }
+}
