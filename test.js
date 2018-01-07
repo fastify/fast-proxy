@@ -7,7 +7,7 @@ const http = require('http')
 const get = require('simple-get').concat
 
 test('forward a request', (t) => {
-  t.plan(6)
+  t.plan(8)
 
   const instance = Fastify()
   instance.register(Forward)
@@ -17,6 +17,8 @@ test('forward a request', (t) => {
   const target = http.createServer((req, res) => {
     t.pass('request proxied')
     res.statusCode = 205
+    res.setHeader('Content-Type', 'text/plain')
+    res.setHeader('x-my-header', 'hello!')
     res.end('hello world')
   })
 
@@ -34,6 +36,8 @@ test('forward a request', (t) => {
 
       get(`http://localhost:${instance.server.address().port}`, (err, res, data) => {
         t.error(err)
+        t.equal(res.headers['content-type'], 'text/plain')
+        t.equal(res.headers['x-my-header'], 'hello!')
         t.equal(res.statusCode, 205)
         t.equal(data.toString(), 'hello world')
       })

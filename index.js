@@ -19,17 +19,33 @@ module.exports = fp(function (fastify, opts, next) {
     const internal = http.request(url)
     internal.end() // TODO support posts
 
+    // TODO what about trailers?
     internal.on('error', (err) => {
       this.send(err)
     })
     internal.on('response', (res) => {
+      const headers = res.headers
+      const headersKeys = Object.keys(headers)
+
+      var i
+      var header
+
+      for (i = 0; i < headersKeys.length; i++) {
+        header = headersKeys[i]
+        this.header(header, headers[header])
+      }
+
       this
         .code(res.statusCode)
         .send(res)
     })
-    internal.on('headers', function (headers) {
-      // TODO
-    })
+  })
+
+  fastify.onClose((fastify, next) => {
+    agent.destroy()
+    // let the event loop do a full run so that it can
+    // actually destroy those sockets
+    setImmediate(next)
   })
 
   next()
