@@ -31,6 +31,7 @@
     "tap": "^11.0.1"
   },
   "dependencies": {
-    "fastify-plugin": "^0.2.1"
+    "fastify-plugin": "^0.2.1",
+    "tiny-lru": "^1.5.0"
   }
 }

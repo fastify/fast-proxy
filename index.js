@@ -3,8 +3,7 @@
 const fp = require('fastify-plugin')
 const http = require('http')
 const URL = require('url').URL
-
-// TODO add a URL object cache
+const lru = require('tiny-lru')
 
 module.exports = fp(function (fastify, opts, next) {
   const agent = new http.Agent({
@@ -13,10 +12,15 @@ module.exports = fp(function (fastify, opts, next) {
     maxSockets: opts.maxSockets || 2048,
     maxFreeSockets: opts.maxFreeSockets || 2048
   })
+  const cache = lru(opts.cacheURLs || 100)
 
   fastify.decorateReply('forward', function (dest) {
     const req = this.request.req
-    const url = new URL(dest)
+
+    // avoid parsing the destination URL if we can
+    const url = cache.get(dest) || new URL(dest)
+    cache.set(dest, url)
+
     const opts = {
       method: req.method,
       port: url.port,
