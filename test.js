@@ -5,6 +5,13 @@ const Fastify = require('fastify')
 const Forward = require('.')
 const http = require('http')
 const get = require('simple-get').concat
+const fs = require('fs')
+const path = require('path')
+const https = require('https')
+const certs = {
+  key: fs.readFileSync(path.join(__dirname, 'fixtures', 'fastify.key')),
+  cert: fs.readFileSync(path.join(__dirname, 'fixtures', 'fastify.cert'))
+}
 
 test('forward a GET request', (t) => {
   t.plan(9)
@@ -50,7 +57,9 @@ test('forward a POST request', (t) => {
   t.plan(8)
 
   const instance = Fastify()
-  instance.register(Forward)
+  instance.register(Forward, {
+    rejectUnauthorized: false
+  })
 
   t.tearDown(instance.close.bind(instance))
 
@@ -93,6 +102,51 @@ test('forward a POST request', (t) => {
       }, (err, res, data) => {
         t.error(err)
         t.deepEqual(data, { something: 'else' })
+      })
+    })
+  })
+})
+
+test('forward a GET request over HTTPS', (t) => {
+  t.plan(9)
+
+  const instance = Fastify({
+    https: certs
+  })
+  instance.register(Forward)
+
+  t.tearDown(instance.close.bind(instance))
+
+  const target = https.createServer(certs, (req, res) => {
+    t.pass('request proxied')
+    t.equal(req.method, 'GET')
+    res.statusCode = 205
+    res.setHeader('Content-Type', 'text/plain')
+    res.setHeader('x-my-header', 'hello!')
+    res.end('hello world')
+  })
+
+  instance.get('/', (request, reply) => {
+    reply.forward(`https://localhost:${target.address().port}`)
+  })
+
+  t.tearDown(target.close.bind(target))
+
+  instance.listen(0, (err) => {
+    t.error(err)
+
+    target.listen(0, (err) => {
+      t.error(err)
+
+      get({
+        url: `https://localhost:${instance.server.address().port}`,
+        rejectUnauthorized: false
+      }, (err, res, data) => {
+        t.error(err)
+        t.equal(res.headers['content-type'], 'text/plain')
+        t.equal(res.headers['x-my-header'], 'hello!')
+        t.equal(res.statusCode, 205)
+        t.equal(data.toString(), 'hello world')
       })
     })
   })
