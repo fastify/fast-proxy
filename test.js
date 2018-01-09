@@ -8,6 +8,7 @@ const get = require('simple-get').concat
 const fs = require('fs')
 const path = require('path')
 const https = require('https')
+const Transform = require('stream').Transform
 const certs = {
   key: fs.readFileSync(path.join(__dirname, 'fixtures', 'fastify.key')),
   cert: fs.readFileSync(path.join(__dirname, 'fixtures', 'fastify.cert'))
@@ -147,6 +148,103 @@ test('forward a GET request over HTTPS', (t) => {
         t.equal(res.headers['x-my-header'], 'hello!')
         t.equal(res.statusCode, 205)
         t.equal(data.toString(), 'hello world')
+      })
+    })
+  })
+})
+
+test('transform a response', (t) => {
+  t.plan(9)
+
+  const instance = Fastify()
+  instance.register(Forward)
+
+  t.tearDown(instance.close.bind(instance))
+
+  const target = http.createServer((req, res) => {
+    t.pass('request proxied')
+    t.equal(req.method, 'GET')
+    res.statusCode = 205
+    res.setHeader('Content-Type', 'text/plain')
+    res.setHeader('x-my-header', 'hello!')
+    res.end('hello world')
+  })
+
+  instance.get('/', (request, reply) => {
+    reply.forward(`http://localhost:${target.address().port}`, {
+      onResponse: (res) => {
+        reply.send(res.pipe(new Transform({
+          transform: function (chunk, enc, cb) {
+            this.push(chunk.toString().toUpperCase())
+            cb()
+          }
+        })))
+      }
+    })
+  })
+
+  t.tearDown(target.close.bind(target))
+
+  instance.listen(0, (err) => {
+    t.error(err)
+
+    target.listen(0, (err) => {
+      t.error(err)
+
+      get(`http://localhost:${instance.server.address().port}`, (err, res, data) => {
+        t.error(err)
+        t.equal(res.headers['content-type'], 'text/plain')
+        t.equal(res.headers['x-my-header'], 'hello!')
+        t.equal(res.statusCode, 205)
+        t.equal(data.toString(), 'HELLO WORLD')
+      })
+    })
+  })
+})
+
+test('rewrite headers', (t) => {
+  t.plan(10)
+
+  const instance = Fastify()
+  instance.register(Forward)
+
+  t.tearDown(instance.close.bind(instance))
+
+  const target = http.createServer((req, res) => {
+    t.pass('request proxied')
+    t.equal(req.method, 'GET')
+    res.statusCode = 205
+    res.setHeader('Content-Type', 'text/plain')
+    res.setHeader('x-my-header', 'hello!')
+    res.end('hello world')
+  })
+
+  instance.get('/', (request, reply) => {
+    reply.forward(`http://localhost:${target.address().port}`, {
+      rewriteHeaders: (headers) => {
+        t.pass('rewriteHeaders called')
+        return {
+          'content-type': headers['content-type'],
+          'x-another-header': 'so headers!'
+        }
+      }
+    })
+  })
+
+  t.tearDown(target.close.bind(target))
+
+  instance.listen(0, (err) => {
+    t.error(err)
+
+    target.listen(0, (err) => {
+      t.error(err)
+
+      get(`http://localhost:${instance.server.address().port}`, (err, res, data) => {
+        t.error(err)
+        t.equal(res.headers['content-type'], 'text/plain')
+        t.equal(res.headers['x-another-header'], 'so headers!')
+        t.notOk(res.headers['x-my-header'])
+        t.equal(res.statusCode, 205)
       })
     })
   })

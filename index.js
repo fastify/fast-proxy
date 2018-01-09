@@ -19,8 +19,11 @@ module.exports = fp(function (fastify, opts, next) {
   }
   const cache = lru(opts.cacheURLs || 100)
 
-  fastify.decorateReply('forward', function (dest) {
+  fastify.decorateReply('forward', function (dest, opts) {
+    opts = opts || {}
     const req = this.request.req
+    const onResponse = opts.onResponse
+    const rewriteHeaders = opts.rewriteHeaders
 
     // avoid parsing the destination URL if we can
     const url = cache.get(dest) || new URL(dest)
@@ -28,7 +31,7 @@ module.exports = fp(function (fastify, opts, next) {
 
     req.log.info({ dest }, 'fechting from remote server')
 
-    const opts = {
+    const requestDetails = {
       method: req.method,
       port: url.port,
       hostname: url.hostname,
@@ -36,7 +39,7 @@ module.exports = fp(function (fastify, opts, next) {
       agent: agents[url.protocol]
     }
 
-    const internal = requests[url.protocol].request(opts)
+    const internal = requests[url.protocol].request(requestDetails)
 
     // TODO support different content-types
     internal.end(JSON.stringify(this.request.body))
@@ -48,11 +51,20 @@ module.exports = fp(function (fastify, opts, next) {
     internal.on('response', (res) => {
       req.log.info('response received')
 
-      copyHeaders(res, this)
+      var headers = res.headers
+      if (rewriteHeaders) {
+        headers = rewriteHeaders(headers)
+      }
 
-      this
-        .code(res.statusCode)
-        .send(res)
+      copyHeaders(headers, this)
+
+      this.code(res.statusCode)
+
+      if (onResponse) {
+        onResponse(res)
+      } else {
+        this.send(res)
+      }
     })
   })
 
@@ -67,8 +79,7 @@ module.exports = fp(function (fastify, opts, next) {
   next()
 }, '>= 0.37.0')
 
-function copyHeaders (res, reply) {
-  const headers = res.headers
+function copyHeaders (headers, reply) {
   const headersKeys = Object.keys(headers)
 
   var i
