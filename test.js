@@ -15,7 +15,7 @@ const certs = {
 }
 
 test('forward a GET request', (t) => {
-  t.plan(9)
+  t.plan(10)
 
   const instance = Fastify()
   instance.register(Forward)
@@ -25,6 +25,7 @@ test('forward a GET request', (t) => {
   const target = http.createServer((req, res) => {
     t.pass('request proxied')
     t.equal(req.method, 'GET')
+    t.equal(req.url, '/hello')
     res.statusCode = 205
     res.setHeader('Content-Type', 'text/plain')
     res.setHeader('x-my-header', 'hello!')
@@ -32,7 +33,7 @@ test('forward a GET request', (t) => {
   })
 
   instance.get('/', (request, reply) => {
-    reply.forward(`http://localhost:${target.address().port}`)
+    reply.forward(`http://localhost:${target.address().port}/hello`)
   })
 
   t.tearDown(target.close.bind(target))
@@ -245,6 +246,50 @@ test('rewrite headers', (t) => {
         t.equal(res.headers['x-another-header'], 'so headers!')
         t.notOk(res.headers['x-my-header'])
         t.equal(res.statusCode, 205)
+      })
+    })
+  })
+})
+
+test('base', (t) => {
+  t.plan(10)
+
+  const instance = Fastify()
+
+  t.tearDown(instance.close.bind(instance))
+
+  const target = http.createServer((req, res) => {
+    t.pass('request proxied')
+    t.equal(req.method, 'GET')
+    t.equal(req.url, '/')
+    res.statusCode = 205
+    res.setHeader('Content-Type', 'text/plain')
+    res.setHeader('x-my-header', 'hello!')
+    res.end('hello world')
+  })
+
+  instance.get('/', (request, reply) => {
+    reply.forward()
+  })
+
+  t.tearDown(target.close.bind(target))
+
+  target.listen(0, (err) => {
+    t.error(err)
+
+    instance.register(Forward, {
+      base: `http://localhost:${target.address().port}`
+    })
+
+    instance.listen(0, (err) => {
+      t.error(err)
+
+      get(`http://localhost:${instance.server.address().port}`, (err, res, data) => {
+        t.error(err)
+        t.equal(res.headers['content-type'], 'text/plain')
+        t.equal(res.headers['x-my-header'], 'hello!')
+        t.equal(res.statusCode, 205)
+        t.equal(data.toString(), 'hello world')
       })
     })
   })

@@ -18,12 +18,17 @@ module.exports = fp(function (fastify, opts, next) {
     'https:': new https.Agent(agentOption(opts))
   }
   const cache = lru(opts.cacheURLs || 100)
+  const base = opts.base
 
   fastify.decorateReply('forward', function (dest, opts) {
     opts = opts || {}
     const req = this.request.req
     const onResponse = opts.onResponse
     const rewriteHeaders = opts.rewriteHeaders
+
+    if (base) {
+      dest = base + (dest || '')
+    }
 
     // avoid parsing the destination URL if we can
     const url = cache.get(dest) || new URL(dest)
@@ -34,6 +39,7 @@ module.exports = fp(function (fastify, opts, next) {
     const requestDetails = {
       method: req.method,
       port: url.port,
+      path: url.pathname,
       hostname: url.hostname,
       headers: req.headers,
       agent: agents[url.protocol]
