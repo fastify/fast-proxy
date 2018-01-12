@@ -10,7 +10,7 @@ const requests = {
   'https:': https
 }
 
-module.exports = fp(function (fastify, opts, next) {
+module.exports = fp(function from (fastify, opts, next) {
   const agents = {
     // with a colon, so that it matches url.protocol
     // and we can avoid string manipulation at runtime
@@ -20,7 +20,7 @@ module.exports = fp(function (fastify, opts, next) {
   const cache = lru(opts.cacheURLs || 100)
   const base = opts.base
 
-  fastify.decorateReply('forward', function (dest, opts) {
+  fastify.decorateReply('from', function (dest, opts) {
     opts = opts || {}
     const req = this.request.req
     const onResponse = opts.onResponse

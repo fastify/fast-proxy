@@ -2,7 +2,7 @@
 
 const test = require('tap').test
 const Fastify = require('fastify')
-const Forward = require('.')
+const From = require('.')
 const http = require('http')
 const get = require('simple-get').concat
 const fs = require('fs')
@@ -14,11 +14,11 @@ const certs = {
   cert: fs.readFileSync(path.join(__dirname, 'fixtures', 'fastify.cert'))
 }
 
-test('forward a GET request', (t) => {
+test('from a GET request', (t) => {
   t.plan(10)
 
   const instance = Fastify()
-  instance.register(Forward)
+  instance.register(From)
 
   t.tearDown(instance.close.bind(instance))
 
@@ -33,7 +33,7 @@ test('forward a GET request', (t) => {
   })
 
   instance.get('/', (request, reply) => {
-    reply.forward(`http://localhost:${target.address().port}/hello`)
+    reply.from(`http://localhost:${target.address().port}/hello`)
   })
 
   t.tearDown(target.close.bind(target))
@@ -55,11 +55,11 @@ test('forward a GET request', (t) => {
   })
 })
 
-test('forward a POST request', (t) => {
+test('from a POST request', (t) => {
   t.plan(8)
 
   const instance = Fastify()
-  instance.register(Forward, {
+  instance.register(From, {
     rejectUnauthorized: false
   })
 
@@ -83,7 +83,7 @@ test('forward a POST request', (t) => {
   })
 
   instance.post('/', (request, reply) => {
-    reply.forward(`http://localhost:${target.address().port}`)
+    reply.from(`http://localhost:${target.address().port}`)
   })
 
   t.tearDown(target.close.bind(target))
@@ -109,13 +109,13 @@ test('forward a POST request', (t) => {
   })
 })
 
-test('forward a GET request over HTTPS', (t) => {
+test('from a GET request over HTTPS', (t) => {
   t.plan(9)
 
   const instance = Fastify({
     https: certs
   })
-  instance.register(Forward)
+  instance.register(From)
 
   t.tearDown(instance.close.bind(instance))
 
@@ -129,7 +129,7 @@ test('forward a GET request over HTTPS', (t) => {
   })
 
   instance.get('/', (request, reply) => {
-    reply.forward(`https://localhost:${target.address().port}`)
+    reply.from(`https://localhost:${target.address().port}`)
   })
 
   t.tearDown(target.close.bind(target))
@@ -158,7 +158,7 @@ test('transform a response', (t) => {
   t.plan(9)
 
   const instance = Fastify()
-  instance.register(Forward)
+  instance.register(From)
 
   t.tearDown(instance.close.bind(instance))
 
@@ -172,7 +172,7 @@ test('transform a response', (t) => {
   })
 
   instance.get('/', (request, reply) => {
-    reply.forward(`http://localhost:${target.address().port}`, {
+    reply.from(`http://localhost:${target.address().port}`, {
       onResponse: (res) => {
         reply.send(res.pipe(new Transform({
           transform: function (chunk, enc, cb) {
@@ -207,7 +207,7 @@ test('rewrite headers', (t) => {
   t.plan(10)
 
   const instance = Fastify()
-  instance.register(Forward)
+  instance.register(From)
 
   t.tearDown(instance.close.bind(instance))
 
@@ -221,7 +221,7 @@ test('rewrite headers', (t) => {
   })
 
   instance.get('/', (request, reply) => {
-    reply.forward(`http://localhost:${target.address().port}`, {
+    reply.from(`http://localhost:${target.address().port}`, {
       rewriteHeaders: (headers) => {
         t.pass('rewriteHeaders called')
         return {
@@ -269,7 +269,7 @@ test('base', (t) => {
   })
 
   instance.get('/', (request, reply) => {
-    reply.forward()
+    reply.from()
   })
 
   t.tearDown(target.close.bind(target))
@@ -277,7 +277,7 @@ test('base', (t) => {
   target.listen(0, (err) => {
     t.error(err)
 
-    instance.register(Forward, {
+    instance.register(From, {
       base: `http://localhost:${target.address().port}`
     })
 
@@ -313,7 +313,7 @@ test('querystrings with base', (t) => {
   })
 
   instance.get('/hello', (request, reply) => {
-    reply.forward()
+    reply.from()
   })
 
   t.tearDown(target.close.bind(target))
@@ -321,7 +321,7 @@ test('querystrings with base', (t) => {
   target.listen(0, (err) => {
     t.error(err)
 
-    instance.register(Forward, {
+    instance.register(From, {
       base: `http://localhost:${target.address().port}`
     })
 
@@ -357,7 +357,7 @@ test('querystrings without base', (t) => {
   })
 
   instance.get('/hello', (request, reply) => {
-    reply.forward(`http://localhost:${target.address().port}/world`)
+    reply.from(`http://localhost:${target.address().port}/world`)
   })
 
   t.tearDown(target.close.bind(target))
@@ -365,7 +365,7 @@ test('querystrings without base', (t) => {
   target.listen(0, (err) => {
     t.error(err)
 
-    instance.register(Forward)
+    instance.register(From)
 
     instance.listen(0, (err) => {
       t.error(err)
@@ -399,7 +399,7 @@ test('querystrings override /1 ', (t) => {
   })
 
   instance.get('/hello', (request, reply) => {
-    reply.forward(`http://localhost:${target.address().port}/world?b=c`)
+    reply.from(`http://localhost:${target.address().port}/world?b=c`)
   })
 
   t.tearDown(target.close.bind(target))
@@ -407,7 +407,7 @@ test('querystrings override /1 ', (t) => {
   target.listen(0, (err) => {
     t.error(err)
 
-    instance.register(Forward)
+    instance.register(From)
 
     instance.listen(0, (err) => {
       t.error(err)

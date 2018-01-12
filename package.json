@@ -1,5 +1,5 @@
 {
-  "name": "fastify-http-forward",
+  "name": "fastify-reply-from",
   "version": "0.0.1",
   "description": "forward your HTTP request to another server, for fastify",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mcollina/fastify-http-forward.git"
+    "url": "git+https://github.com/mcollina/fastify-reply-from.git"
   },
   "keywords": [
     "fastify",
@@ -19,9 +19,9 @@
   "author": "Matteo Collina <hello@matteocollina.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mcollina/fastify-http-forward/issues"
+    "url": "https://github.com/mcollina/fastify-reply-from/issues"
   },
-  "homepage": "https://github.com/mcollina/fastify-http-forward#readme",
+  "homepage": "https://github.com/mcollina/fastify-reply-from#readme",
   "devDependencies": {
     "fastify": "^0.37.0",
     "pre-commit": "^1.2.2",
