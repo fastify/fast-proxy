@@ -34,6 +34,7 @@ module.exports = fp(function from (fastify, opts, next) {
     const url = cache.get(dest) || new URL(dest, base)
     cache.set(dest, url)
 
+    // TODO support querystring rewrite via opts
     const queryString = getQueryString(url.search, req.url)
 
     req.log.info({ dest }, 'fechting from remote server')
@@ -50,6 +51,8 @@ module.exports = fp(function from (fastify, opts, next) {
     const internal = requests[url.protocol].request(requestDetails)
 
     // TODO support different content-types
+    // TODO support body rewrite
+    // TODO support streams
     internal.end(JSON.stringify(this.request.body))
 
     internal.on('error', this.send.bind(this))
