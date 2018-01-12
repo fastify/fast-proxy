@@ -12,7 +12,7 @@ const requests = {
 
 module.exports = fp(function (fastify, opts, next) {
   const agents = {
-    // with a column, so that it matches url.protocol
+    // with a colon, so that it matches url.protocol
     // and we can avoid string manipulation at runtime
     'http:': new http.Agent(agentOption(opts)),
     'https:': new https.Agent(agentOption(opts))
@@ -26,20 +26,22 @@ module.exports = fp(function (fastify, opts, next) {
     const onResponse = opts.onResponse
     const rewriteHeaders = opts.rewriteHeaders
 
-    if (base) {
-      dest = base + (dest || '')
+    if (!dest) {
+      dest = req.url
     }
 
     // avoid parsing the destination URL if we can
-    const url = cache.get(dest) || new URL(dest)
+    const url = cache.get(dest) || new URL(dest, base)
     cache.set(dest, url)
+
+    const queryString = getQueryString(url.search, req.url)
 
     req.log.info({ dest }, 'fechting from remote server')
 
     const requestDetails = {
       method: req.method,
       port: url.port,
-      path: url.pathname,
+      path: url.pathname + queryString,
       hostname: url.hostname,
       headers: req.headers,
       agent: agents[url.protocol]
@@ -105,4 +107,18 @@ function agentOption (opts) {
     maxFreeSockets: opts.maxFreeSockets || 2048,
     rejectUnauthorized: opts.rejectUnauthorized
   }
+}
+
+function getQueryString (search, reqUrl) {
+  if (search.length > 0) {
+    return search
+  }
+
+  const queryIndex = reqUrl.indexOf('?')
+
+  if (queryIndex > 0) {
+    return reqUrl.slice(queryIndex)
+  }
+
+  return ''
 }

@@ -294,3 +294,131 @@ test('base', (t) => {
     })
   })
 })
+
+test('querystrings with base', (t) => {
+  t.plan(10)
+
+  const instance = Fastify()
+
+  t.tearDown(instance.close.bind(instance))
+
+  const target = http.createServer((req, res) => {
+    t.pass('request proxied')
+    t.equal(req.method, 'GET')
+    t.equal(req.url, '/hello?a=b')
+    res.statusCode = 205
+    res.setHeader('Content-Type', 'text/plain')
+    res.setHeader('x-my-header', 'hello!')
+    res.end('hello world')
+  })
+
+  instance.get('/hello', (request, reply) => {
+    reply.forward()
+  })
+
+  t.tearDown(target.close.bind(target))
+
+  target.listen(0, (err) => {
+    t.error(err)
+
+    instance.register(Forward, {
+      base: `http://localhost:${target.address().port}`
+    })
+
+    instance.listen(0, (err) => {
+      t.error(err)
+
+      get(`http://localhost:${instance.server.address().port}/hello?a=b`, (err, res, data) => {
+        t.error(err)
+        t.equal(res.headers['content-type'], 'text/plain')
+        t.equal(res.headers['x-my-header'], 'hello!')
+        t.equal(res.statusCode, 205)
+        t.equal(data.toString(), 'hello world')
+      })
+    })
+  })
+})
+
+test('querystrings without base', (t) => {
+  t.plan(10)
+
+  const instance = Fastify()
+
+  t.tearDown(instance.close.bind(instance))
+
+  const target = http.createServer((req, res) => {
+    t.pass('request proxied')
+    t.equal(req.method, 'GET')
+    t.equal(req.url, '/world?a=b')
+    res.statusCode = 205
+    res.setHeader('Content-Type', 'text/plain')
+    res.setHeader('x-my-header', 'hello!')
+    res.end('hello world')
+  })
+
+  instance.get('/hello', (request, reply) => {
+    reply.forward(`http://localhost:${target.address().port}/world`)
+  })
+
+  t.tearDown(target.close.bind(target))
+
+  target.listen(0, (err) => {
+    t.error(err)
+
+    instance.register(Forward)
+
+    instance.listen(0, (err) => {
+      t.error(err)
+
+      get(`http://localhost:${instance.server.address().port}/hello?a=b`, (err, res, data) => {
+        t.error(err)
+        t.equal(res.headers['content-type'], 'text/plain')
+        t.equal(res.headers['x-my-header'], 'hello!')
+        t.equal(res.statusCode, 205)
+        t.equal(data.toString(), 'hello world')
+      })
+    })
+  })
+})
+
+test('querystrings override /1 ', (t) => {
+  t.plan(10)
+
+  const instance = Fastify()
+
+  t.tearDown(instance.close.bind(instance))
+
+  const target = http.createServer((req, res) => {
+    t.pass('request proxied')
+    t.equal(req.method, 'GET')
+    t.equal(req.url, '/world?b=c')
+    res.statusCode = 205
+    res.setHeader('Content-Type', 'text/plain')
+    res.setHeader('x-my-header', 'hello!')
+    res.end('hello world')
+  })
+
+  instance.get('/hello', (request, reply) => {
+    reply.forward(`http://localhost:${target.address().port}/world?b=c`)
+  })
+
+  t.tearDown(target.close.bind(target))
+
+  target.listen(0, (err) => {
+    t.error(err)
+
+    instance.register(Forward)
+
+    instance.listen(0, (err) => {
+      t.error(err)
+
+      get(`http://localhost:${instance.server.address().port}/hello?a=b`, (err, res, data) => {
+        t.error(err)
+        t.equal(res.headers['content-type'], 'text/plain')
+        t.equal(res.headers['x-my-header'], 'hello!')
+        t.equal(res.statusCode, 205)
+        t.equal(data.toString(), 'hello world')
+      })
+    })
+  })
+})
