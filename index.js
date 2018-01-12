@@ -52,10 +52,7 @@ module.exports = fp(function from (fastify, opts, next) {
     // TODO support different content-types
     internal.end(JSON.stringify(this.request.body))
 
-    // TODO what about trailers?
-    internal.on('error', (err) => {
-      this.send(err)
-    })
+    internal.on('error', this.send.bind(this))
     internal.on('response', (res) => {
       req.log.info('response received')
 
