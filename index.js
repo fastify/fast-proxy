@@ -5,6 +5,7 @@ const http = require('http')
 const https = require('https')
 const URL = require('url').URL
 const lru = require('tiny-lru')
+const querystring = require('querystring')
 const requests = {
   'http:': http,
   'https:': https
@@ -34,8 +35,19 @@ module.exports = fp(function from (fastify, opts, next) {
     const url = cache.get(dest) || new URL(dest, base)
     cache.set(dest, url)
 
-    // TODO support querystring rewrite via opts
-    const queryString = getQueryString(url.search, req.url)
+    var headers = req.headers
+    const queryString = getQueryString(url.search, req.url, opts)
+    var body = ''
+
+    // TODO support different content-types
+    if (opts.body) {
+      body = JSON.stringify(opts.body)
+      headers = Object.assign(headers, {
+        'content-length': Buffer.byteLength(body)
+      })
+    } else if (this.request.body) {
+      body = JSON.stringify(this.request.body)
+    }
 
     req.log.info({ dest }, 'fechting from remote server')
 
@@ -44,16 +56,13 @@ module.exports = fp(function from (fastify, opts, next) {
       port: url.port,
       path: url.pathname + queryString,
       hostname: url.hostname,
-      headers: req.headers,
+      headers,
       agent: agents[url.protocol]
     }
 
     const internal = requests[url.protocol].request(requestDetails)
-
-    // TODO support different content-types
-    // TODO support body rewrite
     // TODO support streams
-    internal.end(JSON.stringify(this.request.body))
+    internal.end(body)
 
     internal.on('error', this.send.bind(this))
     internal.on('response', (res) => {
@@ -109,9 +118,13 @@ function agentOption (opts) {
   }
 }
 
-function getQueryString (search, reqUrl) {
+function getQueryString (search, reqUrl, opts) {
   if (search.length > 0) {
     return search
+  }
+
+  if (opts.queryString) {
+    return '?' + querystring.stringify(opts.queryString)
   }
 
   const queryIndex = reqUrl.indexOf('?')

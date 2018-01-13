@@ -422,3 +422,104 @@ test('querystrings override /1 ', (t) => {
     })
   })
 })
+
+test('querystrings override with an option', (t) => {
+  t.plan(10)
+
+  const instance = Fastify()
+
+  t.tearDown(instance.close.bind(instance))
+
+  const target = http.createServer((req, res) => {
+    t.pass('request proxied')
+    t.equal(req.method, 'GET')
+    t.equal(req.url, '/world?b=c')
+    res.statusCode = 205
+    res.setHeader('Content-Type', 'text/plain')
+    res.setHeader('x-my-header', 'hello!')
+    res.end('hello world')
+  })
+
+  instance.get('/hello', (request, reply) => {
+    reply.from(`http://localhost:${target.address().port}/world`, {
+      queryString: { b: 'c' }
+    })
+  })
+
+  t.tearDown(target.close.bind(target))
+
+  target.listen(0, (err) => {
+    t.error(err)
+
+    instance.register(From)
+
+    instance.listen(0, (err) => {
+      t.error(err)
+
+      get(`http://localhost:${instance.server.address().port}/hello?a=b`, (err, res, data) => {
+        t.error(err)
+        t.equal(res.headers['content-type'], 'text/plain')
+        t.equal(res.headers['x-my-header'], 'hello!')
+        t.equal(res.statusCode, 205)
+        t.equal(data.toString(), 'hello world')
+      })
+    })
+  })
+})
+
+test('override body', (t) => {
+  t.plan(9)
+
+  const instance = Fastify()
+  instance.register(From)
+
+  t.tearDown(instance.close.bind(instance))
+
+  const target = http.createServer((req, res) => {
+    t.pass('request proxied')
+    t.equal(req.method, 'POST')
+    t.equal(req.headers['content-type'], 'application/json')
+    t.equal(req.headers['content-length'], '20')
+    var data = ''
+    req.setEncoding('utf8')
+    req.on('data', (d) => {
+      data += d
+    })
+    req.on('end', () => {
+      t.deepEqual(JSON.parse(data), { something: 'else' })
+      res.statusCode = 200
+      res.setHeader('content-type', 'application/json')
+      res.end(JSON.stringify({ hello: 'fastify' }))
+    })
+  })
+
+  instance.post('/', (request, reply) => {
+    reply.from(`http://localhost:${target.address().port}`, {
+      body: {
+        something: 'else'
+      }
+    })
+  })
+
+  t.tearDown(target.close.bind(target))
+
+  instance.listen(0, (err) => {
+    t.error(err)
+
+    target.listen(0, (err) => {
+      t.error(err)
+
+      get({
+        url: `http://localhost:${instance.server.address().port}`,
+        method: 'POST',
+        json: true,
+        body: {
+          hello: 'world'
+        }
+      }, (err, res, data) => {
+        t.error(err)
+        t.deepEqual(data, { hello: 'fastify' })
+      })
+    })
+  })
+})
