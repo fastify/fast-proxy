@@ -6,6 +6,8 @@ const https = require('https')
 const URL = require('url').URL
 const lru = require('tiny-lru')
 const querystring = require('querystring')
+const Stream = require('stream')
+const pump = require('pump')
 const requests = {
   'http:': http,
   'https:': https
@@ -31,7 +33,7 @@ module.exports = fp(function from (fastify, opts, next) {
       dest = req.url
     }
 
-    // avoid parsing the destination URL if we can
+    // we leverage caching to avoid parsing the destination URL
     const url = cache.get(dest) || new URL(dest, base)
     cache.set(dest, url)
 
@@ -40,18 +42,23 @@ module.exports = fp(function from (fastify, opts, next) {
     var body = ''
 
     // TODO support different content-types
+    // TODO support opts.body as a Stream
     if (opts.body) {
       body = JSON.stringify(opts.body)
       headers = Object.assign(headers, {
         'content-length': Buffer.byteLength(body)
       })
     } else if (this.request.body) {
-      body = JSON.stringify(this.request.body)
+      if (this.request.body instanceof Stream) {
+        body = this.request.body
+      } else {
+        body = JSON.stringify(this.request.body)
+      }
     }
 
     req.log.info({ dest }, 'fechting from remote server')
 
-    const requestDetails = {
+    const details = {
       method: req.method,
       port: url.port,
       path: url.pathname + queryString,
@@ -60,9 +67,17 @@ module.exports = fp(function from (fastify, opts, next) {
       agent: agents[url.protocol]
     }
 
-    const internal = requests[url.protocol].request(requestDetails)
-    // TODO support streams
-    internal.end(body)
+    const internal = requests[url.protocol].request(details)
+
+    if (body instanceof Stream) {
+      pump(body, internal, (err) => {
+        if (err) {
+          this.send(err)
+        }
+      })
+    } else {
+      internal.end(body)
+    }
 
     internal.on('error', this.send.bind(this))
     internal.on('response', (res) => {
@@ -94,7 +109,7 @@ module.exports = fp(function from (fastify, opts, next) {
   })
 
   next()
-}, '>= 0.37.0')
+}, '>= 0.39.0')
 
 function copyHeaders (headers, reply) {
   const headersKeys = Object.keys(headers)

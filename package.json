@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/mcollina/fastify-reply-from#readme",
   "devDependencies": {
-    "fastify": "^0.37.0",
+    "fastify": "^0.39.0",
     "pre-commit": "^1.2.2",
     "simple-get": "^2.7.0",
     "snazzy": "^7.0.0",
