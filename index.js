@@ -42,8 +42,10 @@ module.exports = fp(function from (fastify, opts, next) {
     var body = ''
 
     // TODO support different content-types
-    // TODO support opts.body as a Stream
     if (opts.body) {
+      if (typeof opts.body.pipe === 'function') {
+        throw new Error('sending a new body as a stream is not supported yet')
+      }
       body = JSON.stringify(opts.body)
       headers = Object.assign(headers, {
         'content-length': Buffer.byteLength(body)

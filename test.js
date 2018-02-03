@@ -8,7 +8,9 @@ const get = require('simple-get').concat
 const fs = require('fs')
 const path = require('path')
 const https = require('https')
-const Transform = require('stream').Transform
+const stream = require('stream')
+const Transform = stream.Transform
+const Readable = stream.Readable
 const certs = {
   key: fs.readFileSync(path.join(__dirname, 'fixtures', 'fastify.key')),
   cert: fs.readFileSync(path.join(__dirname, 'fixtures', 'fastify.cert'))
@@ -575,6 +577,59 @@ test('forward a stream', (t) => {
       }, (err, res, data) => {
         t.error(err)
         t.deepEqual(JSON.parse(data), { something: 'else' })
+      })
+    })
+  })
+})
+
+test('throws when overriding a body with a stream', (t) => {
+  t.plan(5)
+
+  const instance = Fastify()
+  instance.register(From)
+
+  t.tearDown(instance.close.bind(instance))
+
+  const target = http.createServer((req, res) => {
+    t.fail('the target server should never be called')
+    res.end()
+  })
+
+  instance.post('/', (request, reply) => {
+    const body = new Readable({
+      read: function () {
+        t.fail('the read function should never be called')
+      }
+    })
+
+    t.throws(() => {
+      reply.from(`http://localhost:${target.address().port}`, {
+        body
+      })
+    })
+
+    // return a 500
+    reply.code(500).send({ an: 'error' })
+  })
+
+  t.tearDown(target.close.bind(target))
+
+  instance.listen(0, (err) => {
+    t.error(err)
+
+    target.listen(0, (err) => {
+      t.error(err)
+
+      get({
+        url: `http://localhost:${instance.server.address().port}`,
+        method: 'POST',
+        json: true,
+        body: {
+          hello: 'world'
+        }
+      }, (err, res) => {
+        t.error(err)
+        t.equal(res.statusCode, 500)
       })
     })
   })
