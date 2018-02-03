@@ -9,6 +9,7 @@ const fs = require('fs')
 const path = require('path')
 const https = require('https')
 const stream = require('stream')
+const msgpack = require('msgpack5')()
 const Transform = stream.Transform
 const Readable = stream.Readable
 const certs = {
@@ -630,6 +631,60 @@ test('throws when overriding a body with a stream', (t) => {
       }, (err, res) => {
         t.error(err)
         t.equal(res.statusCode, 500)
+      })
+    })
+  })
+})
+
+test('override body and content-type in a POST request', (t) => {
+  t.plan(8)
+
+  const instance = Fastify()
+  instance.register(From)
+
+  t.tearDown(instance.close.bind(instance))
+
+  const target = http.createServer((req, res) => {
+    t.pass('request proxied')
+    t.equal(req.method, 'POST')
+    t.equal(req.headers['content-type'], 'application/msgpack')
+    var data = []
+    req.on('data', (d) => {
+      data.push(d)
+    })
+    req.on('end', () => {
+      t.deepEqual(msgpack.decode(Buffer.concat(data)), { hello: 'world' })
+      res.statusCode = 200
+      res.setHeader('content-type', 'application/json')
+      res.end(JSON.stringify({ something: 'else' }))
+    })
+  })
+
+  instance.post('/', (request, reply) => {
+    reply.from(`http://localhost:${target.address().port}`, {
+      contentType: 'application/msgpack',
+      body: msgpack.encode(request.body)
+    })
+  })
+
+  t.tearDown(target.close.bind(target))
+
+  instance.listen(0, (err) => {
+    t.error(err)
+
+    target.listen(0, (err) => {
+      t.error(err)
+
+      get({
+        url: `http://localhost:${instance.server.address().port}`,
+        method: 'POST',
+        json: true,
+        body: {
+          hello: 'world'
+        }
+      }, (err, res, data) => {
+        t.error(err)
+        t.deepEqual(data, { something: 'else' })
       })
     })
   })

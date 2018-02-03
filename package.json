@@ -24,6 +24,7 @@
   "homepage": "https://github.com/mcollina/fastify-reply-from#readme",
   "devDependencies": {
     "fastify": "^0.43.0",
+    "msgpack5": "^4.0.1",
     "pre-commit": "^1.2.2",
     "simple-get": "^2.7.0",
     "snazzy": "^7.0.0",

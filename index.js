@@ -41,14 +41,21 @@ module.exports = fp(function from (fastify, opts, next) {
     const queryString = getQueryString(url.search, req.url, opts)
     var body = ''
 
-    // TODO support different content-types
     if (opts.body) {
       if (typeof opts.body.pipe === 'function') {
         throw new Error('sending a new body as a stream is not supported yet')
       }
-      body = JSON.stringify(opts.body)
+
+      if (opts.contentType) {
+        body = opts.body
+      } else {
+        body = JSON.stringify(opts.body)
+        opts.contentType = 'application/json'
+      }
+
       headers = Object.assign(headers, {
-        'content-length': Buffer.byteLength(body)
+        'content-length': Buffer.byteLength(body),
+        'content-type': opts.contentType
       })
     } else if (this.request.body) {
       if (this.request.body instanceof Stream) {
