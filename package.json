@@ -22,6 +22,9 @@
   "bugs": {
     "url": "https://github.com/mcollina/fastify-reply-from/issues"
   },
+  "engines" : {
+    "node" : ">=8.0.0"
+  },
   "homepage": "https://github.com/mcollina/fastify-reply-from#readme",
   "devDependencies": {
     "fastify": "^0.43.0",
