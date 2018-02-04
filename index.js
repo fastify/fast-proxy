@@ -23,19 +23,19 @@ module.exports = fp(function from (fastify, opts, next) {
   const cache = lru(opts.cacheURLs || 100)
   const base = opts.base
 
-  fastify.decorateReply('from', function (dest, opts) {
+  fastify.decorateReply('from', function (source, opts) {
     opts = opts || {}
     const req = this.request.req
     const onResponse = opts.onResponse
-    const rewriteHeaders = opts.rewriteHeaders
+    const rewriteHeaders = opts.rewriteHeaders || headersNoOp
 
-    if (!dest) {
-      dest = req.url
+    if (!source) {
+      source = req.url
     }
 
     // we leverage caching to avoid parsing the destination URL
-    const url = cache.get(dest) || new URL(dest, base)
-    cache.set(dest, url)
+    const url = cache.get(source) || new URL(source, base)
+    cache.set(source, url)
 
     var headers = req.headers
     const queryString = getQueryString(url.search, req.url, opts)
@@ -65,7 +65,7 @@ module.exports = fp(function from (fastify, opts, next) {
       }
     }
 
-    req.log.info({ dest }, 'fechting from remote server')
+    req.log.info({ source }, 'fetching from remote server')
 
     const details = {
       method: req.method,
@@ -92,12 +92,7 @@ module.exports = fp(function from (fastify, opts, next) {
     internal.on('response', (res) => {
       req.log.info('response received')
 
-      var headers = res.headers
-      if (rewriteHeaders) {
-        headers = rewriteHeaders(headers)
-      }
-
-      copyHeaders(headers, this)
+      copyHeaders(rewriteHeaders(res), this)
 
       this.code(res.statusCode)
 
@@ -158,4 +153,8 @@ function getQueryString (search, reqUrl, opts) {
   }
 
   return ''
+}
+
+function headersNoOp (res) {
+  return res.headers
 }

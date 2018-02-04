@@ -223,10 +223,10 @@ test('rewrite headers', (t) => {
 
   instance.get('/', (request, reply) => {
     reply.from(`http://localhost:${target.address().port}`, {
-      rewriteHeaders: (headers) => {
+      rewriteHeaders: (res) => {
         t.pass('rewriteHeaders called')
         return {
-          'content-type': headers['content-type'],
+          'content-type': res.headers['content-type'],
           'x-another-header': 'so headers!'
         }
       }
