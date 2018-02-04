@@ -8,12 +8,12 @@ fastify plugin to forward the current http request to another server.
 npm i fastify-reply-from
 ```
 
-## Usagej
+## Usage
 
 The following example set up two fastify servers and forward the request
 from one to the other.
 
-```
+```js
 'use strict'
 
 const Fastify = require('fastify')
