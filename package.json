@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mcollina/fastify-reply-from.git"
+    "url": "git+https://github.com/fastify/fastify-reply-from.git"
   },
   "keywords": [
     "fastify",
@@ -20,12 +20,12 @@
   "author": "Matteo Collina <hello@matteocollina.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mcollina/fastify-reply-from/issues"
+    "url": "https://github.com/fastify/fastify-reply-from/issues"
   },
   "engines" : {
     "node" : ">=8.0.0"
   },
-  "homepage": "https://github.com/mcollina/fastify-reply-from#readme",
+  "homepage": "https://github.com/fastify/fastify-reply-from#readme",
   "devDependencies": {
     "fastify": "^0.43.0",
     "msgpack5": "^4.0.1",

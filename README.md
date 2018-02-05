@@ -1,7 +1,7 @@
 # fastify-reply-from
 
-[![Build Status](https://travis-ci.org/mcollina/fastify-reply-from.svg?branch=master)](https://travis-ci.org/mcollina/fastify-reply-from)
-[![NPM version](https://img.shields.io/npm/v/fastify-reply-from.svg?style=flat)](https://www.npmjs.com/package/fastify-reply-fro-reply-fromm)
+[![Build Status](https://travis-ci.org/fastify/fastify-reply-from.svg?branch=master)](https://travis-ci.org/fastify/fastify-reply-from)
+[![NPM version](https://img.shields.io/npm/v/fastify-reply-from.svg?style=flat)](https://www.npmjs.com/package/fastify-reply-fromm)
 
 fastify plugin to forward the current http request to another server.
 
