@@ -125,6 +125,7 @@ already overriding the [`body`][body].
       refacotring because we have to make the `req.id` unique
       (see [hyperid](http://npm.im/hyperid)).
 * [ ] support http2
+* [ ] benchmarks
 
 ## License
 
