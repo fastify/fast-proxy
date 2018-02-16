@@ -22,8 +22,8 @@
   "bugs": {
     "url": "https://github.com/fastify/fastify-reply-from/issues"
   },
-  "engines" : {
-    "node" : ">=8.0.0"
+  "engines": {
+    "node": ">=8.0.0"
   },
   "homepage": "https://github.com/fastify/fastify-reply-from#readme",
   "devDependencies": {
