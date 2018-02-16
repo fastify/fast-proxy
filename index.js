@@ -38,6 +38,7 @@ module.exports = fp(function from (fastify, opts, next) {
     cache.set(source, url)
 
     var headers = req.headers
+    headers.host = url.hostname
     const queryString = getQueryString(url.search, req.url, opts)
     var body = ''
 

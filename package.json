@@ -22,13 +22,14 @@
   "bugs": {
     "url": "https://github.com/fastify/fastify-reply-from/issues"
   },
-  "engines" : {
-    "node" : ">=8.0.0"
+  "engines": {
+    "node": ">=8.0.0"
   },
   "homepage": "https://github.com/fastify/fastify-reply-from#readme",
   "devDependencies": {
     "fastify": "^0.43.0",
     "msgpack5": "^4.0.1",
+    "nock": "^9.1.6",
     "pre-commit": "^1.2.2",
     "simple-get": "^2.7.0",
     "snazzy": "^7.0.0",
