@@ -23,7 +23,7 @@ instance.get('*', (request, reply) => {
 })
 
 instance.register(From, {
-  base: 'http://httpbin.org/ip'
+  base: 'http://httpbin.org'
 })
 
 instance.listen(0, (err) => {

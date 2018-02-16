@@ -59,6 +59,7 @@ target.listen(3001, (err) => {
 #### `base`
 
 Set the base URL for all the forwarded requests.
+Note that _every path will be discarded_.
 
 #### cacheURLs
 
