@@ -4,10 +4,18 @@ const t = require('tap')
 const Fastify = require('fastify')
 const From = require('..')
 const get = require('simple-get').concat
+const nock = require('nock')
 
 const instance = Fastify()
 
-t.plan(5)
+nock('http://httpbin.org')
+  .get('/ip')
+  .reply(function (uri, requestBody) {
+    t.is(this.req.headers.host, 'httpbin.org')
+    return { origin: '127.0.0.1' }
+  })
+
+t.plan(6)
 t.tearDown(instance.close.bind(instance))
 
 instance.get('/', (request, reply) => {
