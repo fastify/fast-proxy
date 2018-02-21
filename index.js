@@ -37,7 +37,8 @@ module.exports = fp(function from (fastify, opts, next) {
     const url = cache.get(source) || new URL(source, base)
     cache.set(source, url)
 
-    var headers = req.headers
+    const isHttp2 = req.httpVersionMajor === 2
+    var headers = isHttp2 ? http2toHttp1Headers(req.headers) : req.headers
     headers.host = url.hostname
     const queryString = getQueryString(url.search, req.url, opts)
     var body = ''
@@ -89,11 +90,19 @@ module.exports = fp(function from (fastify, opts, next) {
       internal.end(body)
     }
 
-    internal.on('error', this.send.bind(this))
+    internal.on('error', (err) => {
+      req.log.warn(err, 'response errored')
+      this.send(err)
+    })
+
     internal.on('response', (res) => {
       req.log.info('response received')
 
-      copyHeaders(rewriteHeaders(res), this)
+      if (isHttp2) {
+        copyHeadersHttp2(rewriteHeaders(res), this)
+      } else {
+        copyHeaders(rewriteHeaders(res), this)
+      }
 
       this.code(res.statusCode)
 
@@ -126,6 +135,47 @@ function copyHeaders (headers, reply) {
     header = headersKeys[i]
     reply.header(header, headers[header])
   }
+}
+
+// HTTP2 version specific for copyHeaders
+// this handles headers with ':' in front
+function copyHeadersHttp2 (headers, reply) {
+  const headersKeys = Object.keys(headers)
+
+  var i
+  var header
+
+  for (i = 0; i < headersKeys.length; i++) {
+    header = headersKeys[i]
+
+    // TODO what other http1-specific headers exists?
+    switch (header) {
+      case 'connection':
+        break
+      // case 'date':
+      //   break
+      default:
+        reply.header(header, headers[header])
+        break
+    }
+  }
+}
+
+function http2toHttp1Headers (headers) {
+  const dest = {}
+  const headersKeys = Object.keys(headers)
+
+  var i
+  var header
+
+  for (i = 0; i < headersKeys.length; i++) {
+    header = headersKeys[i]
+    if (header.charCodeAt(0) !== 58) {  // fast path for indexOf(':') === 0
+      dest[header] = headers[header]
+    }
+  }
+
+  return dest
 }
 
 function agentOption (opts) {
