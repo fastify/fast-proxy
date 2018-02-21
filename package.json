@@ -28,6 +28,8 @@
   "homepage": "https://github.com/fastify/fastify-reply-from#readme",
   "devDependencies": {
     "fastify": "^0.43.0",
+    "got": "^8.2.0",
+    "h2url": "^0.1.2",
     "msgpack5": "^4.0.1",
     "nock": "^9.1.6",
     "pre-commit": "^1.2.2",
