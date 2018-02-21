@@ -4,6 +4,7 @@
 [![NPM version](https://img.shields.io/npm/v/fastify-reply-from.svg?style=flat)](https://www.npmjs.com/package/fastify-reply-fromm)
 
 fastify plugin to forward the current http request to another server.
+HTTP2 to HTTP is supported too.
 
 ## Install
 
