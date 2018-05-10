@@ -13,15 +13,14 @@ const target = Fastify({
   http2: true
 })
 
-target.post('/', (request, reply) => {
+target.get('/', (request, reply) => {
   t.pass('request proxied')
-  t.deepEqual(request.body, { something: 'else' })
-  reply.code(200).header('x-my-header', 'hello!').send({
+  reply.code(200).send({
     hello: 'world'
   })
 })
 
-instance.post('/', (request, reply) => {
+instance.get('/', (request, reply) => {
   reply.from()
 })
 
@@ -37,19 +36,23 @@ async function run () {
 
   await instance.listen(0)
 
-  t.test('http -> http2', async (t) => {
+  t.test('http -> http2 crash', async (t) => {
     try {
-      const { headers, body, statusCode } = await got(`http://localhost:${instance.server.address().port}`, {
-        body: { something: 'else' },
-        json: true
+      await target.close()
+      await got(`http://localhost:${instance.server.address().port}`, {
+        rejectUnauthorized: false
       })
-      t.equal(statusCode, 200)
-      t.equal(headers['x-my-header'], 'hello!')
-      t.match(headers['content-type'], /application\/json/)
-      t.deepEqual(body, { hello: 'world' })
     } catch (err) {
-      t.error(err)
+      t.equal(err.response.statusCode, 503)
+      t.match(err.response.headers['content-type'], /application\/json/)
+      t.deepEqual(JSON.parse(err.response.body), {
+        statusCode: 503,
+        error: 'Service Unavailable',
+        message: 'Service Unavailable'
+      })
+      return
     }
+    t.fail()
   })
 }
 
