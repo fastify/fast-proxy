@@ -62,10 +62,16 @@ module.exports = fp(function from (fastify, opts, next) {
     }
 
     // according to https://tools.ietf.org/html/rfc2616#section-4.3
-    // fastify ignore message body when it's a GET request
+    // fastify ignore message body when it's a GET or HEAD request
     // when proxy this request, we should reset the content-length to make it a valid http request
     // discussion: https://github.com/fastify/fastify/issues/953
-    if (req.method === 'GET') {
+    if (req.method === 'GET' || req.method === 'HEAD') {
+      // body will be populated here only if opts.body is passed.
+      // if we are doing that with a GET or HEAD request is a programmer error
+      // and as such we can throw immediately.
+      if (body) {
+        throw new Error('Rewriting the body when doing a GET is not allowed')
+      }
       headers['content-length'] = 0
     }
 
