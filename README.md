@@ -57,6 +57,8 @@ target.listen(3001, (err) => {
 })
 ```
 
+## API
+
 ### plugin options
 
 #### `base`
@@ -104,6 +106,8 @@ Defaults to `true`, passed down to [`https.Agent`][https-agent] instances.
 This needs to be set to `false` to reply from https servers with
 self-signed certificates.
 
+---
+
 ### reply.from(source, [opts])
 
 The plugin decores the
@@ -149,7 +153,7 @@ already overriding the [`body`][body].
       refacotring because we have to make the `req.id` unique
       (see [hyperid](http://npm.im/hyperid)).
 * [ ] Support origin HTTP2 push
-* [ ] benchmarks
+* [x] benchmarks
 
 ## License
 
