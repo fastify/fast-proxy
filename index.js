@@ -59,6 +59,8 @@ module.exports = fp(function from (fastify, opts, next) {
         body = this.request.body
       } else {
         body = JSON.stringify(this.request.body)
+        headers['content-length'] = Buffer.byteLength(body)
+        headers['content-type'] = 'application/json'
       }
     }
 
