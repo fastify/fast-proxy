@@ -1,4 +1,4 @@
-# req-proxy
+# k-proxy
 Node.js framework agnostic library that enables you to forward an http request to another HTTP server. 
 Supported protocols: HTTP, HTTPS, HTTP2
 
@@ -6,15 +6,15 @@ Supported protocols: HTTP, HTTPS, HTTP2
 
 ## Install
 ```
-npm i req-proxy
+npm i k-proxy
 ```
 
 ## Usage
-The following examples describe how to use `req-proxy` with `restana`:
+The following examples describe how to use `k-proxy` with `restana`:
 
 Gateway:
 ```js
-const { proxy, close } = require('req-proxy')({
+const { proxy, close } = require('k-proxy')({
   // options
 })
 const gateway = require('restana')()
@@ -93,11 +93,11 @@ This will get passed to
 
 ## Benchmarks
 Benchmark scripts can be found in `benchmarks` folder.
-> `req-query` is fast with F
+> `rp` is fast with F
 ```bash
 wrk -t8 -c50 -d20s http://127.0.0.1:8080/service/hi
 ```
-- **req-proxy/restana**: Requests/sec **13127.70**
+- **k-proxy/restana**: Requests/sec **13127.70**
 - **fastify-reply-from**: Requests/sec 9758.00
 - **http-proxy**: Requests/sec 408.97
 

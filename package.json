@@ -1,5 +1,5 @@
 {
-  "name": "req-proxy",
+  "name": "k-proxy",
   "version": "1.0.0",
   "description": "Forward your HTTP request to another server.",
   "main": "index.js",
@@ -16,6 +16,12 @@
     "http",
     "forward",
     "proxy"
+  ],
+  "files": [
+    "LICENSE",
+    "README.md",
+    "index.js",
+    "lib/"
   ],
   "author": "Rolando Santamaria Maso",
   "license": "MIT",
