@@ -92,7 +92,7 @@ This will get passed to
 [`querystring.stringify`](https://nodejs.org/api/querystring.html#querystring_querystring_stringify_obj_sep_eq_options).
 
 ## Benchmarks
-Benchmark scripts can be found in `benchmarks` folder.
+Benchmark scripts can be found in `benchmark` folder.
 > `fast-proxy` is fast with F
 ```bash
 wrk -t8 -c50 -d20s http://127.0.0.1:8080/service/hi
