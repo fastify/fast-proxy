@@ -12,10 +12,10 @@
     "url": "git@github.com:jkyberneees/req-proxy.git"
   },
   "keywords": [
-    "fastify",
     "http",
     "forward",
-    "proxy"
+    "proxy",
+    "gateway"
   ],
   "files": [
     "LICENSE",
