@@ -1,15 +1,15 @@
 {
   "name": "req-proxy",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Forward your HTTP request to another server.",
   "main": "index.js",
   "scripts": {
-    "test": "nyc mocha",
+    "test": "nyc mocha test/*.test.js",
     "bench": "( node benchmark/service.js & node benchmark/gateway.js & (sleep 5 && wrk -t8 -c8 -d30s http://127.0.0.1:8080/service/hi) )"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fastify/fastify-reply-from.git"
+    "url": "git@github.com:jkyberneees/req-proxy.git"
   },
   "keywords": [
     "fastify",
@@ -20,12 +20,12 @@
   "author": "Rolando Santamaria Maso",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/fastify/fastify-reply-from/issues"
+    "url": "https://github.com/jkyberneees/req-proxy/issues"
   },
   "engines": {
     "node": ">=8.0.0"
   },
-  "homepage": "https://github.com/fastify/fastify-reply-from#readme",
+  "homepage": "https://github.com/jkyberneees/req-proxy",
   "devDependencies": {
     "fastify": "^2.3.0",
     "fastify-reply-from": "^0.6.0",
