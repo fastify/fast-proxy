@@ -1,6 +1,6 @@
 /* global describe, it */
 
-describe('req-proxy smoke', () => {
+describe('req-proxy TODO', () => {
   it('TODO ...', (done) => {
     done()
   })
