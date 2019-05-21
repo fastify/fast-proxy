@@ -47,35 +47,29 @@ module.exports = (opts) => {
       const headers = sourceHttp2 ? filterPseudoHeaders(req.headers) : req.headers
       headers.host = url.hostname
       const qs = getQueryString(url.search, req.url, opts)
+
       let body = ''
-
-      if (req.body) {
-        if (req.body instanceof Stream) {
-          body = req.body
-        } else {
-          body = JSON.stringify(req.body)
-          headers['content-length'] = Buffer.byteLength(body)
-          headers['content-type'] = 'application/json'
-        }
-      }
-
       // according to https://tools.ietf.org/html/rfc2616#section-4.3
-      // fastify ignore message body when it's a GET or HEAD request
+      // proxy should ignore message body when it's a GET or HEAD request
       // when proxy this request, we should reset the content-length to make it a valid http request
       if (req.method === 'GET' || req.method === 'HEAD') {
-        // body will be populated here only if opts.body is passed.
-        // if we are doing that with a GET or HEAD request is a programmer error
-        // and as such we can throw immediately.
-        if (body) {
-          throw new Error('Rewriting the body when doing a GET is not allowed')
-        }
         headers['content-length'] = 0
+      } else {
+        if (req.body) {
+          if (req.body instanceof Stream) {
+            body = req.body
+          } else {
+            body = JSON.stringify(req.body)
+            headers['content-length'] = Buffer.byteLength(body)
+            headers['content-type'] = 'application/json'
+          }
+        }
       }
 
-      request({ method: req.method, url, qs, headers, body }, async (err, { headers, statusCode, stream }) => {
+      request({ method: req.method, url, qs, headers, body }, async (err, response) => {
         if (err) {
           if (!res.sent) {
-            if (err.code === 'ERR_HTTP2_STREAM_CANCEL') {
+            if (err.code === 'ECONNREFUSED' || err.code === 'ERR_HTTP2_STREAM_CANCEL') {
               res.statusCode = 503
               res.end('Service Unavailable')
             } else {
@@ -83,8 +77,12 @@ module.exports = (opts) => {
               res.end(err.message)
             }
           }
+
           return
         }
+
+        // destructing response from remote
+        const { headers, statusCode, stream } = response
 
         // convert response stream to buffer
         const buffer = Buffer.concat(await toArray(stream))
