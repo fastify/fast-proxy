@@ -12,18 +12,18 @@ npm i req-proxy
 ## Usage
 The following examples describe how to use `req-proxy` with `restana`:
 
-Proxy:
+Gateway:
 ```js
 const { proxy, close } = require('req-proxy')({
   // options
 })
-const service = require('restana')()
+const gateway = require('restana')()
 
-service.all('/service/*', function (req, res) {
+gateway.all('/service/*', function (req, res) {
   proxy(req, res, 'http://127.0.0.1:3000' + req.url, {})
 })
 
-service.start(8080)
+gateway.start(8080)
 ```
 
 Remote service:
@@ -96,7 +96,7 @@ This will get passed to
 ```bash
 wrk -t8 -c50 -d20s http://127.0.0.1:8080/service/hi
 ```
-- **req-proxy**: Requests/sec **13127.70**
+- **req-proxy/restana**: Requests/sec **13127.70**
 - **fastify-reply-from**: Requests/sec 9758.00
 - **http-proxy**: Requests/sec 408.97
 
