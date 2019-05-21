@@ -1,11 +1,11 @@
 {
-  "name": "fastify-reply-from",
-  "version": "0.6.0",
-  "description": "forward your HTTP request to another server, for fastify",
+  "name": "req-proxy",
+  "version": "0.0.1",
+  "description": "Forward your HTTP request to another server.",
   "main": "index.js",
   "scripts": {
-    "coverage": "tap -j8 test/*.js --cov",
-    "test": "standard | snazzy && tap -j8 test/*.js test/http2/http2.js"
+    "test": "nyc mocha",
+    "bench": "( node benchmark/service.js & node benchmark/gateway.js & (sleep 5 && wrk -t8 -c8 -d30s http://127.0.0.1:8080/service/hi) )"
   },
   "repository": {
     "type": "git",
@@ -17,7 +17,7 @@
     "forward",
     "proxy"
   ],
-  "author": "Matteo Collina <hello@matteocollina.com>",
+  "author": "Rolando Santamaria Maso",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/fastify/fastify-reply-from/issues"
@@ -27,29 +27,19 @@
   },
   "homepage": "https://github.com/fastify/fastify-reply-from#readme",
   "devDependencies": {
-    "fastify": "^2.0.0",
-    "got": "^9.6.0",
-    "h2url": "^0.1.2",
-    "msgpack5": "^4.2.1",
-    "nock": "^10.0.6",
-    "pre-commit": "^1.2.2",
-    "proxyquire": "^2.1.0",
-    "simple-get": "^3.0.3",
-    "snazzy": "^8.0.0",
-    "standard": "^12.0.1",
-    "tap": "^12.6.6"
+    "fastify": "^2.3.0",
+    "fastify-reply-from": "^0.6.0",
+    "http-proxy": "^1.17.0",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
+    "restana": "^3.0.0",
+    "standard": "^12.0.1"
   },
   "dependencies": {
     "end-of-stream": "^1.4.1",
-    "fastify-plugin": "^1.5.0",
     "pump": "^3.0.0",
     "semver": "^6.0.0",
-    "tiny-lru": "^6.0.1",
-    "undici": "^0.3.3"
-  },
-  "greenkeeper": {
-    "ignore": [
-      "tap"
-    ]
+    "stream-to-array": "^2.3.0",
+    "tiny-lru": "^6.0.1"
   }
 }
