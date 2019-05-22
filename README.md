@@ -15,12 +15,13 @@ The following examples describe how to use `fast-proxy` with `restana`:
 Gateway:
 ```js
 const { proxy, close } = require('fast-proxy')({
+  base: 'http://127.0.0.1:3000'
   // options
 })
 const gateway = require('restana')()
 
 gateway.all('/service/*', function (req, res) {
-  proxy(req, res, 'http://127.0.0.1:3000' + req.url, {})
+  proxy(req, res, req.url, {})
 })
 
 gateway.start(8080)
