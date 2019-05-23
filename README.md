@@ -102,12 +102,12 @@ Replaces the original querystring of the request with what is specified.
 This will get passed to
 [`querystring.stringify`](https://nodejs.org/api/querystring.html#querystring_querystring_stringify_obj_sep_eq_options).
 
-## License
-MIT
-
 ## Related topics
 - http-agent: https://nodejs.org/api/http.html#http_new_agent_options
 - https-agent: https://nodejs.org/api/https.html#https_class_https_agent
 
 ## Contributions 
 Special thanks to `fastify-reply-from` developers for creating a production ready library that we could initially fork.
+
+## License
+MIT
