@@ -1,7 +1,7 @@
 'use strict'
 
 const URL = require('url').URL
-const toArray = require('stream-to-array')
+const pump = require('pump')
 const lru = require('tiny-lru')
 const querystring = require('querystring')
 const Stream = require('stream')
@@ -97,9 +97,6 @@ module.exports = (opts) => {
         // destructing response from remote
         const { headers, statusCode, stream } = response
 
-        // convert response stream to buffer
-        const buffer = Buffer.concat(await toArray(stream))
-
         if (sourceHttp2) {
           copyHeaders(
             rewriteHeaders(stripHttp1ConnectionHeaders(headers)),
@@ -110,10 +107,10 @@ module.exports = (opts) => {
         }
 
         if (onResponse) {
-          onResponse(req, res, buffer)
+          onResponse(req, res, stream)
         } else {
           res.statusCode = statusCode
-          res.end(buffer)
+          pump(stream, res)
         }
       })
     }
