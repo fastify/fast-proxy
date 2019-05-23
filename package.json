@@ -33,6 +33,7 @@
   },
   "homepage": "https://github.com/jkyberneees/req-proxy",
   "devDependencies": {
+    "0http": "^1.0.0",
     "body-parser": "^1.19.0",
     "chai": "^4.2.0",
     "fastify": "^2.3.0",
