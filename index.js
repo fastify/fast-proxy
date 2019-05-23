@@ -1,5 +1,3 @@
-'use strict'
-
 const URL = require('url').URL
 const pump = require('pump')
 const lru = require('tiny-lru')
