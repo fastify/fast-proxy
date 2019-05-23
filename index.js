@@ -74,6 +74,8 @@ module.exports = (opts) => {
             body = JSON.stringify(req.body)
             populateHeaders(headers, body, 'application/json')
           }
+        } else {
+          body = req
         }
       }
 
