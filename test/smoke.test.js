@@ -22,7 +22,7 @@ describe('req-proxy smoke', () => {
     gateway.use(bodyParser.json())
 
     gateway.all('/service/*', function (req, res) {
-      proxy(req, res, null, {})
+      proxy(req, res, req.url, {})
     })
 
     gHttpServer = await gateway.start(8080)
