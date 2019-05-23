@@ -6,7 +6,7 @@ let gateway, service, close, proxy, gHttpServer
 
 describe('req-proxy smoke', () => {
   it('init', async () => {
-    const fastProxy = require('./../index')({
+    const fastProxy = require('../index')({
       base: 'http://127.0.0.1:3000'
     })
     close = fastProxy.close
@@ -19,7 +19,6 @@ describe('req-proxy smoke', () => {
   it('init & start gateway', async () => {
     // init gateway
     gateway = require('restana')()
-    gateway.use(bodyParser.json())
 
     gateway.all('/service/*', function (req, res) {
       proxy(req, res, req.url, {})
@@ -49,6 +48,10 @@ describe('req-proxy smoke', () => {
     service.post('/service/post', (req, res) => {
       res.send(req.body)
     })
+    service.get('/service/headers', (req, res) => {
+      res.setHeader('x-agent', 'fast-proxy')
+      res.send()
+    })
 
     await service.start(3000)
   })
@@ -70,8 +73,17 @@ describe('req-proxy smoke', () => {
       .post('/service/post')
       .send({ name: 'john' })
       .expect(200)
+      .then((res) => {
+        expect(res.body.name).to.equal('john')
+      })
+  })
+
+  it('should 200 on GET /servive/headers', async () => {
+    await request(gHttpServer)
+      .get('/service/headers')
+      .expect(200)
       .then((response) => {
-        expect(response.body.name).to.equal('john')
+        expect(response.headers['x-agent']).to.equal('fast-proxy')
       })
   })
 
