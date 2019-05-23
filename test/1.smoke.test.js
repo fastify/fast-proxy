@@ -19,6 +19,7 @@ describe('req-proxy smoke', () => {
   it('init & start gateway', async () => {
     // init gateway
     gateway = require('restana')()
+    gateway.use(bodyParser.json())
 
     gateway.all('/service/*', function (req, res) {
       proxy(req, res, req.url, {})
@@ -80,7 +81,7 @@ describe('req-proxy smoke', () => {
 
   it('should 200 on GET /servive/headers', async () => {
     await request(gHttpServer)
-      .get('/service/headers')
+      .get('/service/headers?query=string')
       .expect(200)
       .then((response) => {
         expect(response.headers['x-agent']).to.equal('fast-proxy')
