@@ -98,6 +98,7 @@ Benchmark scripts can be found in `benchmark` folder.
 ```bash
 wrk -t8 -c50 -d20s http://127.0.0.1:8080/service/hi
 ```
+- **fast-proxy/0http**: Requests/sec **16851.85**
 - **fast-proxy/restana**: Requests/sec **13127.70**
 - **fastify-reply-from**: Requests/sec 9758.00
 - **http-proxy**: Requests/sec 408.97
