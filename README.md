@@ -34,6 +34,16 @@ service.get('/service/hi', (req, res) => res.send('Hello World!'))
 
 service.start(3000)
 ```
+## Benchmarks
+Benchmark scripts can be found in `benchmark` folder.
+> `fast-proxy` is fast with F
+```bash
+wrk -t8 -c50 -d20s http://127.0.0.1:8080/service/hi
+```
+- **fast-proxy/0http**: Requests/sec **17791.10**
+- **fast-proxy/restana**: Requests/sec **17013.53**
+- **fastify-reply-from**: Requests/sec 12056.81
+- **http-proxy**: Requests/sec 408.97
 
 ## API
 
@@ -77,9 +87,9 @@ proxy(
 )
 ```
 #### opts
-##### onResponse(req, res, buffer)
+##### onResponse(req, res, stream)
 Called when an http response is received from the source.
-The default behavior is `res.end(buffer)`, which will be disabled if the
+The default behavior is `pump(stream, res)`, which will be disabled if the
 option is specified.
 
 ##### rewriteHeaders(headers)
@@ -91,20 +101,6 @@ It must return the new headers object.
 Replaces the original querystring of the request with what is specified.
 This will get passed to
 [`querystring.stringify`](https://nodejs.org/api/querystring.html#querystring_querystring_stringify_obj_sep_eq_options).
-
-## Benchmarks
-Benchmark scripts can be found in `benchmark` folder.
-> `fast-proxy` is fast with F
-```bash
-wrk -t8 -c50 -d20s http://127.0.0.1:8080/service/hi
-```
-- **fast-proxy/0http**: Requests/sec **17791.10**
-- **fast-proxy/restana**: Requests/sec **17013.53**
-- **fastify-reply-from**: Requests/sec 12056.81
-- **http-proxy**: Requests/sec 408.97
-
-## TODOs
-- Unit Tests
 
 ## License
 MIT
