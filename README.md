@@ -82,7 +82,7 @@ Enables you to forward an http request to another HTTP server.
 proxy(
   originReq,                          // http.IncomingMessage 
   originRes,                          // http.ServerResponse
-  remoteServiceBaseUrl + req.url,     // String
+  req.url,                            // String -> remote URL + path or path if base was set
   {}                                  // Options described below
 )
 ```
