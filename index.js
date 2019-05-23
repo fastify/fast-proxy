@@ -12,6 +12,15 @@ const {
   stripHttp1ConnectionHeaders
 } = require('./lib/utils')
 
+function populateHeaders (headers, body, contentType) {
+  headers['content-length'] = Buffer.byteLength(body)
+
+  // only populate content-type if not present
+  if (!headers['content-type']) {
+    headers['content-type'] = contentType
+  }
+}
+
 module.exports = (opts) => {
   const { request, close } = buildRequest({
     http2: !!opts.http2,
@@ -58,10 +67,12 @@ module.exports = (opts) => {
         if (req.body) {
           if (req.body instanceof Stream) {
             body = req.body
+          } else if (typeof req.body === 'string') {
+            body = req.body
+            populateHeaders(headers, body, 'text/plain')
           } else {
             body = JSON.stringify(req.body)
-            headers['content-length'] = Buffer.byteLength(body)
-            headers['content-type'] = 'application/json'
+            populateHeaders(headers, body, 'application/json')
           }
         }
       }
