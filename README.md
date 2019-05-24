@@ -40,8 +40,10 @@ Benchmark scripts can be found in `benchmark` folder.
 ```bash
 wrk -t8 -c50 -d20s http://127.0.0.1:8080/service/hi
 ```
+- **fast-proxy-undici/restana**: Requests/sec **19014.13** (HTTP pipelining = 10)
 - **fast-proxy/0http**: Requests/sec **17791.10**
 - **fast-proxy/restana**: Requests/sec **17013.53**
+- **fast-proxy-undici/restana**: Requests/sec 15320.76 
 - **fastify-reply-from**: Requests/sec 12056.81
 - **http-proxy**: Requests/sec 408.97
 
@@ -54,6 +56,23 @@ Note that _path will be discarded_.
 
 #### http2
 Set to `true` if target server is `http2` enabled.
+
+#### undici
+Set to `true` to use [undici](https://github.com/mcollina/undici)
+instead of `require('http')`. Enabling this flag should guarantee
+20-50% more throughput.
+
+This flag could controls the settings of the undici client, like so:
+
+```js
+...
+  base: 'http://localhost:3001/',
+  undici: {
+    connections: 100,
+    pipelining: 10
+  }
+...
+```
 
 #### cacheURLs
 The number of parsed URLs that will be cached. Default: 100.

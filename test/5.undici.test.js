@@ -3,13 +3,14 @@ const request = require('supertest')
 const bodyParser = require('body-parser')
 const expect = require('chai').expect
 let gateway, service, close, proxy, gHttpServer
-const pem = require('pem')
 
-describe('https', () => {
+describe('undici', () => {
   it('init', async () => {
     const fastProxy = require('../index')({
-      base: 'https://127.0.0.1:3000',
-      rejectUnauthorized: false
+      base: 'http://127.0.0.1:3000',
+      undici: {
+        pipelining: 10
+      }
     })
     close = fastProxy.close
     proxy = fastProxy.proxy
@@ -31,29 +32,19 @@ describe('https', () => {
 
   it('init & start remote service', (done) => {
     // init remote service
-    pem.createCertificate({
-      days: 1,
-      selfSigned: true
-    }, (_, keys) => {
-      service = require('restana')({
-        server: require('https').createServer({
-          key: keys.serviceKey,
-          cert: keys.certificate
-        })
-      })
-      service.use(bodyParser.json())
+    service = require('restana')({})
+    service.use(bodyParser.json())
 
-      service.get('/service/get', (req, res) => res.send('Hello World!'))
-      service.post('/service/post', (req, res) => {
-        res.send(req.body)
-      })
-      service.get('/service/headers', (req, res) => {
-        res.setHeader('x-agent', 'fast-proxy')
-        res.send()
-      })
-
-      service.start(3000).then(() => done())
+    service.get('/service/get', (req, res) => res.send('Hello World!'))
+    service.post('/service/post', (req, res) => {
+      res.send(req.body)
     })
+    service.get('/service/headers', (req, res) => {
+      res.setHeader('x-agent', 'fast-proxy')
+      res.send()
+    })
+
+    service.start(3000).then(() => done())
   })
 
   it('should 200 on GET to valid remote endpoint', async () => {
