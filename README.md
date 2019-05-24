@@ -40,10 +40,10 @@ Benchmark scripts can be found in `benchmark` folder.
 ```bash
 wrk -t8 -c50 -d20s http://127.0.0.1:8080/service/hi
 ```
-- **fast-proxy-undici/restana**: Requests/sec **19014.13** (HTTP pipelining = 10)
+- **fast-proxy-undici/0http**: Requests/sec **19014.13** (HTTP pipelining = 10)
 - **fast-proxy/0http**: Requests/sec **17791.10**
 - **fast-proxy/restana**: Requests/sec **17013.53**
-- **fast-proxy-undici/restana**: Requests/sec 15320.76 
+- **fast-proxy-undici/0http**: Requests/sec 15320.76 (HTTP pipelining = 1)
 - **fastify-reply-from**: Requests/sec 12056.81
 - **http-proxy**: Requests/sec 408.97
 
