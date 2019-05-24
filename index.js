@@ -26,7 +26,8 @@ module.exports = (opts) => {
     keepAliveMsecs: opts.keepAliveMsecs,
     maxFreeSockets: opts.maxFreeSockets,
     maxSockets: opts.maxSockets,
-    rejectUnauthorized: opts.rejectUnauthorized
+    rejectUnauthorized: opts.rejectUnauthorized,
+    undici: opts.undici
   })
 
   const cache = lru(opts.cacheURLs || 100)
