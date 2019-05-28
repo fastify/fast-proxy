@@ -4,6 +4,7 @@ Supported protocols: HTTP, HTTPS, HTTP2
 
 > This library forked from `fastify-reply-from`: https://github.com/fastify/fastify-reply-from
 
+`req-proxy` powers: https://www.npmjs.com/package/fast-gateway 🚀 
 ## Install
 ```
 npm i fast-proxy
