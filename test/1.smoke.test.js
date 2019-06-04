@@ -4,7 +4,7 @@ const bodyParser = require('body-parser')
 const expect = require('chai').expect
 let gateway, service, close, proxy, gHttpServer
 
-describe('req-proxy smoke', () => {
+describe('fast-proxy smoke', () => {
   it('init', async () => {
     const fastProxy = require('../index')({
       base: 'http://127.0.0.1:3000'

@@ -1,6 +1,6 @@
 {
   "name": "fast-proxy",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Forward your HTTP request to another server.",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:jkyberneees/req-proxy.git"
+    "url": "git@github.com:jkyberneees/fast-proxy.git"
   },
   "keywords": [
     "http",
@@ -26,12 +26,12 @@
   "author": "Rolando Santamaria Maso",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jkyberneees/req-proxy/issues"
+    "url": "https://github.com/jkyberneees/fast-proxy/issues"
   },
   "engines": {
     "node": ">=8.0.0"
   },
-  "homepage": "https://github.com/jkyberneees/req-proxy",
+  "homepage": "https://github.com/jkyberneees/fast-proxy",
   "devDependencies": {
     "0http": "^1.0.0",
     "body-parser": "^1.19.0",
