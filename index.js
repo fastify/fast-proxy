@@ -56,7 +56,7 @@ module.exports = (opts) => {
       headers.host = url.hostname
       const qs = getQueryString(url.search, req.url, opts)
 
-      let body = ''
+      let body = null
       // according to https://tools.ietf.org/html/rfc2616#section-4.3
       // proxy should ignore message body when it's a GET or HEAD request
       // when proxy this request, we should reset the content-length to make it a valid http request
