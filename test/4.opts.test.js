@@ -54,7 +54,7 @@ describe('fast-proxy smoke', () => {
       .get('/service/headers')
       .expect(200)
       .then((response) => {
-        expect(response.headers['url']).to.equal('/service/headers?age=33')
+        expect(response.headers.url).to.equal('/service/headers?age=33')
       })
   })
 
