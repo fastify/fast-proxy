@@ -21,13 +21,7 @@ function populateHeaders (headers, body, contentType) {
 
 module.exports = (opts) => {
   const { request, close } = buildRequest({
-    http2: !!opts.http2,
-    base: opts.base,
-    keepAliveMsecs: opts.keepAliveMsecs,
-    maxFreeSockets: opts.maxFreeSockets,
-    maxSockets: opts.maxSockets,
-    rejectUnauthorized: opts.rejectUnauthorized,
-    undici: opts.undici
+    ...opts
   })
 
   const cache = lru(opts.cacheURLs || 100)
