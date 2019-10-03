@@ -92,7 +92,7 @@ This needs to be set to `false` to reply from https servers with
 self-signed certificates.
 
 #### Extended configurations
-Other allowed configurations in https://nodejs.org/api/http.html#http_new_agent_options can also be part of the `opts` object.
+Other supported configurations in https://nodejs.org/api/http.html#http_new_agent_options can also be part of the `opts` object.
 
 ### close
 Optional _"on `close` resource release"_ strategy. You can link this to your application shutdown hook as an example.
