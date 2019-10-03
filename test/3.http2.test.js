@@ -83,7 +83,7 @@ describe('http2', () => {
 
   it('should 200 on GET headers', async () => {
     const { headers } = await h2url.concat({
-      url: `https://127.0.0.1:8080/service/headers`
+      url: 'https://127.0.0.1:8080/service/headers'
     })
     expect(headers[':status']).to.equal(200)
     expect(headers['x-agent']).to.equal('fast-proxy')
@@ -91,7 +91,7 @@ describe('http2', () => {
 
   it('should 200 on POST', async () => {
     const { body } = await h2url.concat({
-      url: `https://127.0.0.1:8080/service/post`,
+      url: 'https://127.0.0.1:8080/service/post',
       method: 'POST',
       headers: {
         'x-header': 'hello',
