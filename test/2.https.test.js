@@ -74,7 +74,7 @@ describe('https', () => {
   it('should timeout on GET /service/longop', async () => {
     await request(gHttpServer)
       .get('/service/longop')
-      .expect(502)
+      .expect(504)
   })
 
   it('should 200 on POST to valid remote endpoint', async () => {

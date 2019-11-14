@@ -80,7 +80,7 @@ module.exports = (opts) => {
               res.statusCode = 503
               res.end('Service Unavailable')
             } else if (err.code === 'ECONNRESET') {
-              res.statusCode = 502
+              res.statusCode = 504
               res.end(err.message)
             } else {
               res.statusCode = 500

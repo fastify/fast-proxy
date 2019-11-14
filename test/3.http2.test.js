@@ -104,7 +104,7 @@ describe('http2', () => {
     const { headers } = await h2url.concat({
       url: 'https://127.0.0.1:8080/service/longop'
     })
-    expect(headers[':status']).to.equal(502)
+    expect(headers[':status']).to.equal(504)
   })
 
   it('should 200 on POST', async () => {
