@@ -31,6 +31,7 @@ module.exports = (opts) => {
     close,
     proxy (req, res, source, opts) {
       opts = opts || {}
+      const reqOpts = opts.request || {}
       const onResponse = opts.onResponse
       const rewriteHeaders = opts.rewriteHeaders || headersNoOp
 
@@ -72,12 +73,15 @@ module.exports = (opts) => {
         }
       }
 
-      request({ method: req.method, url, qs, headers, body }, async (err, response) => {
+      request({ method: req.method, url, qs, headers, body, request: reqOpts }, async (err, response) => {
         if (err) {
           if (!res.sent) {
             if (err.code === 'ECONNREFUSED' || err.code === 'ERR_HTTP2_STREAM_CANCEL') {
               res.statusCode = 503
               res.end('Service Unavailable')
+            } else if (err.code === 'ECONNRESET') {
+              res.statusCode = 502
+              res.end(err.message)
             } else {
               res.statusCode = 500
               res.end(err.message)

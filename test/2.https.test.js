@@ -7,7 +7,7 @@ const pem = require('pem')
 
 describe('https', () => {
   it('init', async () => {
-    const fastProxy = require('../index')({
+    const fastProxy = require('..')({
       base: 'https://127.0.0.1:3000',
       rejectUnauthorized: false
     })
@@ -23,7 +23,11 @@ describe('https', () => {
     gateway = require('restana')()
 
     gateway.all('/service/*', function (req, res) {
-      proxy(req, res, req.url, {})
+      proxy(req, res, req.url, {
+        request: {
+          timeout: 100
+        }
+      })
     })
 
     gHttpServer = await gateway.start(8080)
@@ -44,6 +48,11 @@ describe('https', () => {
       service.use(bodyParser.json())
 
       service.get('/service/get', (req, res) => res.send('Hello World!'))
+      service.get('/service/longop', (req, res) => {
+        setTimeout(() => {
+          res.send('Hello World!')
+        }, 500)
+      })
       service.post('/service/post', (req, res) => {
         res.send(req.body)
       })
@@ -60,6 +69,12 @@ describe('https', () => {
     await request(gHttpServer)
       .get('/service/get')
       .expect(200)
+  })
+
+  it('should timeout on GET /service/longop', async () => {
+    await request(gHttpServer)
+      .get('/service/longop')
+      .expect(502)
   })
 
   it('should 200 on POST to valid remote endpoint', async () => {

@@ -9,7 +9,7 @@ const pump = require('pump')
 describe('http2', () => {
   it('init should fail if base is missing', (done) => {
     try {
-      require('../index')({
+      require('..')({
         rejectUnauthorized: false,
         http2: true
       })
@@ -20,7 +20,7 @@ describe('http2', () => {
   })
 
   it('init', async () => {
-    const fastProxy = require('../index')({
+    const fastProxy = require('..')({
       base: 'https://127.0.0.1:3000',
       rejectUnauthorized: false,
       http2: true
@@ -46,7 +46,11 @@ describe('http2', () => {
       })
 
       gateway.all('/service/*', function (req, res) {
-        proxy(req, res, req.url, {})
+        proxy(req, res, req.url, {
+          request: {
+            timeout: 100
+          }
+        })
       })
 
       gateway.start(8080).then(server => {
@@ -72,6 +76,13 @@ describe('http2', () => {
       service.post('/service/post', (req, res) => {
         pump(req, res)
       })
+
+      service.get('/service/longop', (req, res) => {
+        setTimeout(() => {
+          res.send('Hello World!')
+        }, 500)
+      })
+
       service.get('/service/headers', (req, res) => {
         res.setHeader('x-agent', 'fast-proxy')
         res.send()
@@ -87,6 +98,13 @@ describe('http2', () => {
     })
     expect(headers[':status']).to.equal(200)
     expect(headers['x-agent']).to.equal('fast-proxy')
+  })
+
+  it('should timeout on GET /service/longop', async () => {
+    const { headers } = await h2url.concat({
+      url: 'https://127.0.0.1:8080/service/longop'
+    })
+    expect(headers[':status']).to.equal(502)
   })
 
   it('should 200 on POST', async () => {
