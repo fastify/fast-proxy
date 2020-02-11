@@ -1,4 +1,7 @@
 # fast-proxy
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/fastify/fast-proxy.svg)](https://greenkeeper.io/)
+
 Node.js framework agnostic library that enables you to forward an http request to another HTTP server. 
 Supported protocols: HTTP, HTTPS, HTTP2
 
