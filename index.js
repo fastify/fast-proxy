@@ -47,8 +47,10 @@ module.exports = (opts) => {
       }
 
       const sourceHttp2 = req.httpVersionMajor === 2
-      const headers = sourceHttp2 ? filterPseudoHeaders(req.headers) : req.headers
-      headers.host = url.hostname
+      const headers = { ...sourceHttp2 ? filterPseudoHeaders(req.headers) : req.headers }
+      headers['x-forwarded-host'] = req.headers.host
+      headers.host = `${url.hostname}:${url.port}`
+
       const qs = getQueryString(url.search, req.url, opts)
 
       let body = null

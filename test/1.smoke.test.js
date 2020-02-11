@@ -51,6 +51,9 @@ describe('fast-proxy smoke', () => {
     })
     service.get('/service/headers', (req, res) => {
       res.setHeader('x-agent', 'fast-proxy')
+      res.setHeader('host', req.headers.host)
+      res.setHeader('x-forwarded-host', req.headers['x-forwarded-host'])
+
       res.send()
     })
 
@@ -85,6 +88,8 @@ describe('fast-proxy smoke', () => {
       .expect(200)
       .then((response) => {
         expect(response.headers['x-agent']).to.equal('fast-proxy')
+        expect(response.headers.host).to.equal('127.0.0.1:3000')
+        expect(response.headers['x-forwarded-host']).to.equal('127.0.0.1:8080')
       })
   })
 
