@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "nyc mocha test/*.test.js",
+    "test:alignment": "standard | snazzy && tap --no-esm -J tests/*.js ",
     "bench": "( node benchmark/service.js & node benchmark/fast-proxy-0http-gateway.js & (sleep 5 && wrk -t8 -c8 -d30s http://127.0.0.1:8080/service/hi) )"
   },
   "repository": {
@@ -45,7 +46,10 @@
     "pem": "^1.14.4",
     "restana": "^4.0.7",
     "standard": "^14.3.1",
-    "supertest": "^4.0.2"
+    "supertest": "^4.0.2",
+    "simple-get": "^3.1.0",
+    "snazzy": "^8.0.0",
+    "tap": "^14.10.6"
   },
   "dependencies": {
     "end-of-stream": "^1.4.4",

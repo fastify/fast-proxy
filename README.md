@@ -2,12 +2,12 @@
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/fastify/fast-proxy.svg)](https://greenkeeper.io/)
 
-Node.js framework agnostic library that enables you to forward an http request to another HTTP server. 
+Node.js framework agnostic library that enables you to forward an http request to another HTTP server.
 Supported protocols: HTTP, HTTPS, HTTP2
 
 > This library was initially forked from `fastify-reply-from`: https://github.com/fastify/fastify-reply-from
 
-`fast-proxy` powers: https://www.npmjs.com/package/fast-gateway 🚀 
+`fast-proxy` powers: https://www.npmjs.com/package/fast-gateway 🚀
 ## Install
 ```
 npm i fast-proxy
@@ -104,7 +104,7 @@ Optional _"on `close` resource release"_ strategy. You can link this to your app
 Enables you to forward an http request to another HTTP server.
 ```js
 proxy(
-  originReq,                          // http.IncomingMessage 
+  originReq,                          // http.IncomingMessage
   originRes,                          // http.ServerResponse
   req.url,                            // String -> remote URL + path or path if base was set
   {}                                  // Options described below
@@ -123,7 +123,7 @@ It must return the new headers object.
 
 ##### request
 Extended options supported by `http[s].request` method (https://nodejs.org/api/http.html#http_http_request_options_callback)
-The following options are dynamically assigned: `method, port, path, hostname, headers, agent`.  
+The following options are dynamically assigned: `method, port, path, hostname, headers, agent`.
 
 > `http2` options are limited to `timeout` only, while `undici` supports none.
 
@@ -132,11 +132,16 @@ Replaces the original querystring of the request with what is specified.
 This will get passed to
 [`querystring.stringify`](https://nodejs.org/api/querystring.html#querystring_querystring_stringify_obj_sep_eq_options).
 
+##### rewriteRequestHeaders(originalReq, headers)
+
+Called to rewrite the headers of the request, before them being sent to the other server.
+It must return the new headers object.
+
 ## Related topics
 - http-agent: https://nodejs.org/api/http.html#http_new_agent_options
 - https-agent: https://nodejs.org/api/https.html#https_class_https_agent
 
-## Contributions 
+## Contributions
 Special thanks to `fastify-reply-from` developers for creating a production ready library from where we could initially fork.
 
 ## License
