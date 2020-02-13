@@ -1,4 +1,6 @@
 /* global describe, it */
+'use strict'
+
 const request = require('supertest')
 const bodyParser = require('body-parser')
 const expect = require('chai').expect

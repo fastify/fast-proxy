@@ -1,4 +1,6 @@
 /* global describe, it */
+'use strict'
+
 const h2url = require('h2url')
 const bodyParser = require('body-parser')
 const expect = require('chai').expect
