@@ -1,3 +1,5 @@
+'use strict'
+
 const URL = require('url').URL
 const pump = require('pump')
 const lru = require('tiny-lru')
@@ -78,7 +80,7 @@ module.exports = (opts) => {
 
       const requestHeaders = rewriteRequestHeaders(req, headers)
 
-      request({ method: req.method, url, qs, headers: requestHeaders, body, request: reqOpts }, async (err, response) => {
+      request({ method: req.method, url, qs, headers: requestHeaders, body, request: reqOpts }, (err, response) => {
         if (err) {
           if (!res.sent) {
             if (err.code === 'ECONNREFUSED' || err.code === 'ERR_HTTP2_STREAM_CANCEL') {

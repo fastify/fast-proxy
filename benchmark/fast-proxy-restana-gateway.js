@@ -1,3 +1,5 @@
+'use strict'
+
 const { proxy } = require('../index')({})
 const service = require('restana')()
 

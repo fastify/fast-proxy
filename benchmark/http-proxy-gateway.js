@@ -1,3 +1,5 @@
+'use strict'
+
 const proxy = require('http-proxy').createProxyServer({})
 const http = require('http')
 
