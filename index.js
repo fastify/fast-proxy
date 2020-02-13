@@ -12,15 +12,6 @@ const {
   stripHttp1ConnectionHeaders
 } = require('./lib/utils')
 
-function populateHeaders (headers, body, contentType) {
-  headers['content-length'] = Buffer.byteLength(body)
-
-  // only populate content-type if not present
-  if (!headers['content-type']) {
-    headers['content-type'] = contentType
-  }
-}
-
 module.exports = (opts) => {
   const { request, close } = buildRequest({
     ...opts
@@ -56,7 +47,8 @@ module.exports = (opts) => {
 
       const qs = getQueryString(url.search, req.url, opts)
 
-      let body = null
+      let body = ''
+
       // according to https://tools.ietf.org/html/rfc2616#section-4.3
       // proxy should ignore message body when it's a GET or HEAD request
       // when proxy this request, we should reset the content-length to make it a valid http request
@@ -66,12 +58,18 @@ module.exports = (opts) => {
         if (req.body) {
           if (req.body instanceof Stream) {
             body = req.body
-          } else if (typeof req.body === 'string') {
-            body = req.body
-            populateHeaders(headers, body, 'text/plain')
           } else {
-            body = JSON.stringify(req.body)
-            populateHeaders(headers, body, 'application/json')
+            // Per RFC 7231 §3.1.1.5 if this header is not present we MAY assume application/octet-stream
+            const contentType = req.headers['content-type'] || 'application/octet-stream'
+            // detect if body should be encoded as JSON
+            // supporting extended content-type header formats:
+            // - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type
+            const shouldEncodeJSON = contentType.toLowerCase().indexOf('application/json') === 0
+            // transparently support JSON encoding
+            body = shouldEncodeJSON ? JSON.stringify(req.body) : req.body
+            // update origin request headers after encoding
+            headers['content-length'] = Buffer.byteLength(body)
+            headers['content-type'] = contentType
           }
         } else {
           body = req
