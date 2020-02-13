@@ -5,7 +5,7 @@
 Node.js framework agnostic library that enables you to forward an http request to another HTTP server. 
 Supported protocols: HTTP, HTTPS, HTTP2
 
-> This library forked from `fastify-reply-from`: https://github.com/fastify/fastify-reply-from
+> This library was initially forked from `fastify-reply-from`: https://github.com/fastify/fastify-reply-from
 
 `fast-proxy` powers: https://www.npmjs.com/package/fast-gateway 🚀 
 ## Install
@@ -137,7 +137,7 @@ This will get passed to
 - https-agent: https://nodejs.org/api/https.html#https_class_https_agent
 
 ## Contributions 
-Special thanks to `fastify-reply-from` developers for creating a production ready library that we could initially fork.
+Special thanks to `fastify-reply-from` developers for creating a production ready library from where we could initially fork.
 
 ## License
 MIT

@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "nyc mocha test/*.test.js",
-    "bench": "( node benchmark/service.js & node benchmark/gateway.js & (sleep 5 && wrk -t8 -c8 -d30s http://127.0.0.1:8080/service/hi) )"
+    "bench": "( node benchmark/service.js & node benchmark/fast-proxy-0http-gateway.js & (sleep 5 && wrk -t8 -c8 -d30s http://127.0.0.1:8080/service/hi) )"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:jkyberneees/fast-proxy.git"
+    "url": "git@github.com:fastify/fast-proxy.git"
   },
   "keywords": [
     "http",
@@ -26,12 +26,12 @@
   "author": "Rolando Santamaria Maso",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jkyberneees/fast-proxy/issues"
+    "url": "https://github.com/fastify/fast-proxy/issues"
   },
   "engines": {
     "node": ">=8.0.0"
   },
-  "homepage": "https://github.com/jkyberneees/fast-proxy",
+  "homepage": "https://github.com/fastify/fast-proxy",
   "devDependencies": {
     "0http": "^2.2.2",
     "body-parser": "^1.19.0",
