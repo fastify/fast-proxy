@@ -1,3 +1,5 @@
+'use strict'
+
 const { proxy } = require('../index')({
   base: 'http://127.0.0.1:3000'
 })
