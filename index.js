@@ -77,7 +77,7 @@ module.exports = (opts) => {
         }
       }
 
-      request({ method: req.method, url, qs, headers, body, request: reqOpts }, async (err, response) => {
+      request({ method: req.method, url, qs, headers, body, request: reqOpts }, (err, response) => {
         if (err) {
           if (!res.sent) {
             if (err.code === 'ECONNREFUSED' || err.code === 'ERR_HTTP2_STREAM_CANCEL') {
