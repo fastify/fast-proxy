@@ -7,6 +7,15 @@ const expect = require('chai').expect
 const pump = require('pump')
 let gateway, service, close, proxy, gHttpServer
 
+const nock = require('nock')
+
+nock('http://dev.com')
+  .get('/service/headers?age=33')
+  .reply(200, {
+  }, {
+    url: 'http://dev.com'
+  })
+
 describe('fast-proxy smoke', () => {
   it('init', async () => {
     const fastProxy = require('../index')({
@@ -25,12 +34,10 @@ describe('fast-proxy smoke', () => {
 
     gateway.all('/service/*', function (req, res) {
       proxy(req, res, req.url, {
+        base: req.headers.base,
         queryString: { age: 33 },
         onResponse (req, res, stream) {
           pump(stream, res)
-        },
-        rewriteHeaders (headers) {
-          return headers
         }
       })
     })
@@ -57,6 +64,25 @@ describe('fast-proxy smoke', () => {
       .expect(200)
       .then((response) => {
         expect(response.headers.url).to.equal('/service/headers?age=33')
+      })
+  })
+
+  it('should overwrite global base', async () => {
+    await request(gHttpServer)
+      .get('/service/headers')
+      .set('base', 'http://localhost:3000')
+      .expect(200)
+      .then((response) => {
+        expect(response.headers.url).to.equal('/service/headers?age=33')
+      })
+  })
+
+  it('should overwrite global base 2', async () => {
+    await request(gHttpServer)
+      .get('/service/headers')
+      .set('base', 'http://dev.com')
+      .then((response) => {
+        expect(response.headers.url).to.equal('http://dev.com')
       })
   })
 

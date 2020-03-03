@@ -34,8 +34,13 @@ module.exports = (opts) => {
       }
 
       // we leverage caching to avoid parsing the destination URL
-      const url = cache.get(source) || new URL(source, base)
-      cache.set(source, url)
+      const reqBase = opts.base || base
+      const cacheKey = reqBase + source
+      let url = cache.get(cacheKey)
+      if (!url) {
+        url = new URL(source, reqBase)
+        cache.set(cacheKey, url)
+      }
 
       const sourceHttp2 = req.httpVersionMajor === 2
       const headers = { ...sourceHttp2 ? filterPseudoHeaders(req.headers) : req.headers }
