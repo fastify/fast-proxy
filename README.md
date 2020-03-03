@@ -111,6 +111,11 @@ proxy(
 )
 ```
 #### opts
+
+##### base
+Optionally indicates the base URL for the current request proxy. When used, the global `base` config is overwriten.  
+> This configuration value is ignored when using HTTP2.
+
 ##### onResponse(req, res, stream)
 Called when an http response is received from the source.
 The default behavior is `pump(stream, res)`, which will be disabled if the
