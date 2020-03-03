@@ -6,7 +6,8 @@
   "scripts": {
     "test": "nyc mocha test/*.test.js",
     "test:alignment": "standard | snazzy && tap --no-esm -J tests/*.js ",
-    "bench": "( node benchmark/service.js & node benchmark/fast-proxy-0http-gateway.js & (sleep 5 && wrk -t8 -c8 -d30s http://127.0.0.1:8080/service/hi) )"
+    "bench": "( node benchmark/service.js & node benchmark/fast-proxy-0http-gateway.js & (sleep 5 && wrk -t8 -c8 -d30s http://127.0.0.1:8080/service/hi) )",
+    "lint:fix": "standard --fix"
   },
   "repository": {
     "type": "git",
