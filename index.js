@@ -26,7 +26,7 @@ module.exports = (opts) => {
     ...opts
   })
 
-  const cache = lru(opts.cacheURLs || 100)
+  const cache = getCacheStorage(opts.cacheURLs)
   const base = opts.base
 
   return {
@@ -37,19 +37,7 @@ module.exports = (opts) => {
       const onResponse = opts.onResponse
       const rewriteHeaders = opts.rewriteHeaders || headersNoOp
 
-      if (!source) {
-        source = req.url
-      }
-
-      // we leverage caching to avoid parsing the destination URL
-      const reqBase = opts.base || base
-      const cacheKey = reqBase + source
-      let url = cache.get(cacheKey)
-      if (!url) {
-        url = new URL(source, reqBase)
-        cache.set(cacheKey, url)
-      }
-
+      const url = getReqUrl(source || req.url, cache, base, opts)
       const sourceHttp2 = req.httpVersionMajor === 2
       const headers = { ...sourceHttp2 ? filterPseudoHeaders(req.headers) : req.headers }
       headers['x-forwarded-host'] = req.headers.host
@@ -140,4 +128,30 @@ function getQueryString (search, reqUrl, opts) {
 
 function headersNoOp (headers) {
   return headers
+}
+
+function getCacheStorage (size) {
+  if (size === 0) {
+    return null
+  }
+
+  return lru(size || 100)
+}
+
+function getReqUrl (source, cache, base, opts) {
+  const reqBase = opts.base || base
+  let url
+
+  if (cache) {
+    const cacheKey = reqBase + source
+    url = cache.get(cacheKey)
+    if (!url) {
+      url = new URL(source, reqBase)
+      cache.set(cacheKey, url)
+    }
+  } else {
+    url = new URL(source, reqBase)
+  }
+
+  return url
 }
