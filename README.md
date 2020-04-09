@@ -80,6 +80,7 @@ This flag could controls the settings of the undici client, like so:
 
 #### cacheURLs
 The number of parsed URLs that will be cached. Default: 100.
+> Use value = `0` to disable the caching mechanism
 
 #### keepAliveMsecs
 Defaults to 1 minute, passed down to [`http.Agent`][http-agent] and
