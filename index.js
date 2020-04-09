@@ -35,7 +35,8 @@ module.exports = (opts) => {
       opts = opts || {}
       const reqOpts = opts.request || {}
       const onResponse = opts.onResponse
-      const rewriteHeaders = opts.rewriteHeaders || headersNoOp
+      const rewriteHeaders = opts.rewriteHeaders || rewriteHeadersNoOp
+      const rewriteRequestHeaders = opts.rewriteRequestHeaders || rewriteRequestHeadersNoOp
 
       const url = getReqUrl(source || req.url, cache, base, opts)
       const sourceHttp2 = req.httpVersionMajor === 2
@@ -67,7 +68,15 @@ module.exports = (opts) => {
         }
       }
 
-      request({ method: req.method, url, qs, headers, body, request: reqOpts }, (err, response) => {
+      const reqParams = {
+        method: req.method,
+        url,
+        qs,
+        headers: rewriteRequestHeaders(req, headers),
+        body,
+        request: reqOpts
+      }
+      request(reqParams, (err, response) => {
         if (err) {
           if (!res.sent) {
             if (err.code === 'ECONNREFUSED' || err.code === 'ERR_HTTP2_STREAM_CANCEL') {
@@ -126,7 +135,11 @@ function getQueryString (search, reqUrl, opts) {
   return ''
 }
 
-function headersNoOp (headers) {
+function rewriteHeadersNoOp (headers) {
+  return headers
+}
+
+function rewriteRequestHeadersNoOp (req, headers) {
   return headers
 }
 
