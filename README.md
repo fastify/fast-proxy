@@ -122,6 +122,10 @@ Called when an http response is received from the source.
 The default behavior is `pump(stream, res)`, which will be disabled if the
 option is specified.
 
+##### rewriteRequestHeaders(req, headers)
+Called to rewrite the headers of the request, before them being sent to the downstream server. 
+It must return the new headers object.
+
 ##### rewriteHeaders(headers)
 Called to rewrite the headers of the response, before them being copied
 over to the outer response.

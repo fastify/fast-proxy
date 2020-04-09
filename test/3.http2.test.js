@@ -23,7 +23,7 @@ describe('http2', () => {
 
   it('init', async () => {
     const fastProxy = require('..')({
-      base: 'https://127.0.0.1:3000',
+      base: 'https://localhost:3000',
       rejectUnauthorized: false,
       http2: true
     })
@@ -96,7 +96,7 @@ describe('http2', () => {
 
   it('should 200 on GET headers', async () => {
     const { headers } = await h2url.concat({
-      url: 'https://127.0.0.1:8080/service/headers'
+      url: 'https://localhost:8080/service/headers'
     })
     expect(headers[':status']).to.equal(200)
     expect(headers['x-agent']).to.equal('fast-proxy')
@@ -104,14 +104,14 @@ describe('http2', () => {
 
   it('should timeout on GET /service/longop', async () => {
     const { headers } = await h2url.concat({
-      url: 'https://127.0.0.1:8080/service/longop'
+      url: 'https://localhost:8080/service/longop'
     })
     expect(headers[':status']).to.equal(504)
   })
 
   it('should 200 on POST', async () => {
     const { body } = await h2url.concat({
-      url: 'https://127.0.0.1:8080/service/post',
+      url: 'https://localhost:8080/service/post',
       method: 'POST',
       headers: {
         'x-header': 'hello',
