@@ -24,7 +24,6 @@ describe('hooks', () => {
 
     gateway.all('/service/*', function (req, res) {
       proxy(req, res, req.url, {
-        base: req.headers.base,
         rewriteHeaders: (headers) => {
           headers['x-reponse-hook'] = '1'
 
