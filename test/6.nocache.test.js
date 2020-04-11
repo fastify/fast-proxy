@@ -26,7 +26,6 @@ describe('no URLs cache', () => {
 
     gateway.all('/service/*', function (req, res) {
       proxy(req, res, req.url, {
-        base: req.headers.base,
         onResponse (req, res, stream) {
           pump(stream, res)
         }
