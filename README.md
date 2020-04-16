@@ -82,6 +82,9 @@ This flag could controls the settings of the undici client, like so:
 The number of parsed URLs that will be cached. Default: 100.
 > Use value = `0` to disable the caching mechanism
 
+#### followRedirects
+Specify whether you want to follow redirects. Default: false.
+
 #### keepAliveMsecs
 Defaults to 1 minute, passed down to [`http.Agent`][http-agent] and
 [`https.Agent`][https-agent] instances.
