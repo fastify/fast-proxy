@@ -82,6 +82,20 @@ This flag could controls the settings of the undici client, like so:
 The number of parsed URLs that will be cached. Default: 100.
 > Use value = `0` to disable the caching mechanism
 
+#### requests.http and requests.https
+Override the internal `http` and `https` clients. Defaults: [`http`](https://nodejs.org/api/http.html#http_http) and [`https`](https://nodejs.org/api/https.html#https_https).
+
+This could be used to add support for following redirects, like so:
+
+```js
+...
+  requests: {
+    http: require('follow-redirects/http'),
+    https: require('follow-redirects/https')
+  }
+...
+```
+
 #### keepAliveMsecs
 Defaults to 1 minute, passed down to [`http.Agent`][http-agent] and
 [`https.Agent`][https-agent] instances.
