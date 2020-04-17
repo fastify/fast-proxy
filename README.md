@@ -83,9 +83,9 @@ The number of parsed URLs that will be cached. Default: 100.
 > Use value = `0` to disable the caching mechanism
 
 #### requests.http and requests.https
-Override the internal `http` and `https` clients. Defaults: [`http`](https://nodejs.org/api/http.html#http_http) and [`https`](https://nodejs.org/api/https.html#https_https).
+Allows to optionally overwrite the internal `http` and `https` client agents implementation. Defaults: [`http`](https://nodejs.org/api/http.html#http_http) and [`https`](https://nodejs.org/api/https.html#https_https).
 
-This could be used to add support for following redirects, like so:
+For example, this could be used to add support for following redirects, like so:
 
 ```js
 ...
@@ -95,6 +95,7 @@ This could be used to add support for following redirects, like so:
   }
 ...
 ```
+> If using `undici` or `http2` this settings are ignored!
 
 #### keepAliveMsecs
 Defaults to 1 minute, passed down to [`http.Agent`][http-agent] and
