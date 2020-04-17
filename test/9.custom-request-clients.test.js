@@ -1,4 +1,4 @@
-/* global describe, it */
+/* global describe, it, after */
 'use strict'
 
 const request = require('supertest')
@@ -6,7 +6,7 @@ const expect = require('chai').expect
 
 let service
 
-describe('fast-proxy custom request clients', () => {
+describe('fast-proxy custom request clients/agents', () => {
   it('init & start remote service', async () => {
     // init remote service
     service = require('restana')()
@@ -42,10 +42,7 @@ describe('fast-proxy custom request clients', () => {
       gateway = require('restana')()
 
       gateway.all('/service/*', function (req, res) {
-        proxy(req, res, req.url, {
-          base: req.headers.base,
-          queryString: { age: 33 }
-        })
+        proxy(req, res, req.url, {})
       })
 
       gHttpServer = await gateway.start(8080)
@@ -75,7 +72,7 @@ describe('fast-proxy custom request clients', () => {
         requests: {
           http: require('follow-redirects/http'),
           https: require('follow-redirects/https')
-        },
+        }
       })
       close = fastProxy.close
       proxy = fastProxy.proxy
@@ -89,10 +86,7 @@ describe('fast-proxy custom request clients', () => {
       gateway = require('restana')()
 
       gateway.all('/service/*', function (req, res) {
-        proxy(req, res, req.url, {
-          base: req.headers.base,
-          queryString: { age: 33 }
-        })
+        proxy(req, res, req.url, {})
       })
 
       gHttpServer = await gateway.start(8081)
