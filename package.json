@@ -4,6 +4,7 @@
   "description": "Forward your HTTP request to another server.",
   "main": "index.js",
   "scripts": {
+    "lint": "npx standard",
     "test": "nyc mocha test/*.test.js",
     "bench": "( node benchmark/service.js & node benchmark/fast-proxy-0http-gateway.js & (sleep 5 && wrk -t8 -c8 -d30s http://127.0.0.1:8080/service/hi) )"
   },
@@ -33,11 +34,11 @@
   },
   "homepage": "https://github.com/fastify/fast-proxy",
   "devDependencies": {
-    "0http": "^2.2.2",
+    "0http": "^2.2.4",
     "body-parser": "^1.19.0",
     "chai": "^4.2.0",
-    "fastify": "^2.13.0",
-    "fastify-reply-from": "^2.0.1",
+    "fastify": "^2.13.1",
+    "fastify-reply-from": "^2.1.0",
     "follow-redirects": "^1.11.0",
     "h2url": "^0.2.0",
     "http-proxy": "^1.18.0",
@@ -45,14 +46,14 @@
     "nock": "^12.0.3",
     "nyc": "^15.0.1",
     "pem": "^1.14.4",
-    "restana": "^4.3.1",
+    "restana": "^4.3.2",
     "standard": "^14.3.3",
     "supertest": "^4.0.2"
   },
   "dependencies": {
     "end-of-stream": "^1.4.4",
     "pump": "^3.0.0",
-    "semver": "^7.2.1",
+    "semver": "^7.3.2",
     "tiny-lru": "^7.0.2",
     "undici": "^0.5.0"
   }
