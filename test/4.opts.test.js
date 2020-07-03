@@ -91,7 +91,7 @@ describe('fast-proxy smoke', () => {
       })
   })
 
-  it('should support http status in on response', async () => {
+  it('should retrieve http status from origin', async () => {
     await request(gHttpServer)
       .get('/service/302')
       .expect(302)
