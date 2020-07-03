@@ -110,7 +110,7 @@ module.exports = (opts) => {
         }
 
         if (onResponse) {
-          onResponse(req, res, stream)
+          onResponse(req, res, stream, response)
         } else {
           res.statusCode = statusCode
           pump(stream, res)

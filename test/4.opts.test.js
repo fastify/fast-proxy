@@ -36,7 +36,8 @@ describe('fast-proxy smoke', () => {
       proxy(req, res, req.url, {
         base: req.headers.base,
         queryString: { age: 33 },
-        onResponse (req, res, stream) {
+        onResponse (req, res, stream, response) {
+          res.statusCode = response.statusCode
           pump(stream, res)
         }
       })
@@ -50,10 +51,15 @@ describe('fast-proxy smoke', () => {
     service = require('restana')()
     service.use(bodyParser.json())
 
-    service.get('/service/headers', (req, res) => {
-      res.setHeader('url', req.url)
-      res.send()
-    })
+    service
+      .get('/service/headers', (req, res) => {
+        res.setHeader('url', req.url)
+        res.send()
+      })
+      .get('/service/302', (req, res) => {
+        res.statusCode = 302
+        res.end()
+      })
 
     await service.start(3000)
   })
@@ -84,6 +90,12 @@ describe('fast-proxy smoke', () => {
       .then((response) => {
         expect(response.headers.url).to.equal('http://dev.com')
       })
+  })
+
+  it('should support http status in on response', async () => {
+    await request(gHttpServer)
+      .get('/service/302')
+      .expect(302)
   })
 
   it('close all', async () => {
