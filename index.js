@@ -109,10 +109,12 @@ module.exports = (opts) => {
           copyHeaders(rewriteHeaders(headers), res)
         }
 
+        // set origin response code
+        res.statusCode = statusCode
+
         if (onResponse) {
           onResponse(req, res, stream)
         } else {
-          res.statusCode = statusCode
           pump(stream, res)
         }
       })
