@@ -1,6 +1,6 @@
 {
   "name": "fast-proxy",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "description": "Forward your HTTP request to another server.",
   "main": "index.js",
   "scripts": {
@@ -34,27 +34,27 @@
   },
   "homepage": "https://github.com/fastify/fast-proxy",
   "devDependencies": {
-    "0http": "^2.2.4",
+    "0http": "^2.5.2",
     "body-parser": "^1.19.0",
     "chai": "^4.2.0",
-    "fastify": "^2.13.1",
+    "fastify": "^2.15.1",
     "fastify-reply-from": "^2.1.0",
     "follow-redirects": "^1.11.0",
     "h2url": "^0.2.0",
-    "http-proxy": "^1.18.0",
-    "mocha": "^7.1.1",
+    "http-proxy": "^1.18.1",
+    "mocha": "^7.2.0",
     "nock": "^12.0.3",
-    "nyc": "^15.0.1",
+    "nyc": "^15.1.0",
     "pem": "^1.14.4",
-    "restana": "^4.3.2",
-    "standard": "^14.3.3",
+    "restana": "^4.6.1",
+    "standard": "^14.3.4",
     "supertest": "^4.0.2"
   },
   "dependencies": {
     "end-of-stream": "^1.4.4",
     "pump": "^3.0.0",
     "semver": "^7.3.2",
-    "tiny-lru": "^7.0.2",
-    "undici": "^0.5.0"
+    "tiny-lru": "^7.0.6",
+    "undici": "^1.0.3"
   }
 }
