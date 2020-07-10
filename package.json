@@ -1,6 +1,6 @@
 {
   "name": "fast-proxy",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "description": "Forward your HTTP request to another server.",
   "main": "index.js",
   "scripts": {

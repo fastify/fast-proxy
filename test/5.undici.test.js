@@ -4,6 +4,9 @@
 const request = require('supertest')
 const bodyParser = require('body-parser')
 const expect = require('chai').expect
+
+const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds))
+
 let gateway, service, close, proxy, gHttpServer
 
 describe('undici', () => {
@@ -11,7 +14,8 @@ describe('undici', () => {
     const fastProxy = require('../index')({
       base: 'http://127.0.0.1:3000',
       undici: {
-        pipelining: 10
+        pipelining: 10,
+        requestTimeout: 1000
       }
     })
     close = fastProxy.close
@@ -24,7 +28,7 @@ describe('undici', () => {
   it('init & start gateway', async () => {
     // init gateway
     gateway = require('restana')()
-
+    gateway.use(bodyParser.json())
     gateway.all('/service/*', function (req, res) {
       proxy(req, res, req.url, {})
     })
@@ -45,6 +49,10 @@ describe('undici', () => {
       res.setHeader('x-agent', 'fast-proxy')
       res.send()
     })
+    service.get('/service/timeout', async (req, res) => {
+      await sleep(2000)
+      res.send()
+    })
 
     service.start(3000).then(() => done())
   })
@@ -58,14 +66,15 @@ describe('undici', () => {
   it('should 200 on POST to valid remote endpoint', async () => {
     await request(gHttpServer)
       .post('/service/post')
-      .send({ name: 'john' })
+      .set('Content-Type', 'application/json')
+      .send('{"name":"john"}')
       .expect(200)
       .then((res) => {
         expect(res.body.name).to.equal('john')
       })
   })
 
-  it('should 200 on GET /servive/headers', async () => {
+  it('should 200 on GET /service/headers', async () => {
     await request(gHttpServer)
       .get('/service/headers')
       .expect(200)
@@ -73,6 +82,12 @@ describe('undici', () => {
         expect(response.headers['x-agent']).to.equal('fast-proxy')
       })
   })
+
+  it('should 200 on GET /service/timeout', async () => {
+    await request(gHttpServer)
+      .get('/service/timeout')
+      .expect(504)
+  }).timeout(3000)
 
   it('close all', async () => {
     close()
