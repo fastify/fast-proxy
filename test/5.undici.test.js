@@ -87,7 +87,7 @@ describe('undici', () => {
     await request(gHttpServer)
       .get('/service/timeout')
       .expect(504)
-  }).timeout(3000)
+  })
 
   it('close all', async () => {
     close()
