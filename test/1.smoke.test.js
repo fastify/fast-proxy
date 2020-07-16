@@ -3,7 +3,7 @@
 
 const request = require('supertest')
 const bodyParser = require('body-parser')
-const expect = require('chai').expect
+const { expect } = require('chai')
 let gateway, service, close, proxy, gHttpServer
 
 describe('fast-proxy smoke', () => {
@@ -22,6 +22,8 @@ describe('fast-proxy smoke', () => {
     // init gateway
     gateway = require('restana')()
     gateway.use(bodyParser.json())
+    gateway.use(bodyParser.urlencoded({ extended: true }))
+    gateway.use(bodyParser.text())
 
     gateway.all('/service/*', function (req, res) {
       proxy(req, res, req.url, {})
@@ -46,9 +48,16 @@ describe('fast-proxy smoke', () => {
     // init remote service
     service = require('restana')()
     service.use(bodyParser.json())
-
+    service.use(bodyParser.urlencoded({ extended: true }))
+    service.use(bodyParser.text())
     service.get('/service/get', (req, res) => res.send('Hello World!'))
     service.post('/service/post', (req, res) => {
+      res.send(req.body)
+    })
+    service.post('/service/post/urlencoded', (req, res) => {
+      res.send(req.body)
+    })
+    service.post('/service/post/text', (req, res) => {
       res.send(req.body)
     })
     service.get('/service/headers', (req, res) => {
@@ -74,10 +83,31 @@ describe('fast-proxy smoke', () => {
       .expect(200)
   })
 
-  it('should 200 on POST to valid remote endpoint', async () => {
+  it('should 200 on POST plain/text to valid remote endpoint', async () => {
+    await request(gHttpServer)
+      .post('/service/post/text')
+      .set('content-type', 'text/plain')
+      .send('name is john')
+      .expect(200)
+      .then((res) => {
+        expect(res.text).to.equal('name is john')
+      })
+  })
+
+  it('should 200 on POST application/json to valid remote endpoint', async () => {
     await request(gHttpServer)
       .post('/service/post')
       .send({ name: 'john' })
+      .expect(200)
+      .then((res) => {
+        expect(res.body.name).to.equal('john')
+      })
+  })
+
+  it('should 200 on POST application/x-www-form-urlencoded to valid remote endpoint', async () => {
+    await request(gHttpServer)
+      .post('/service/post/urlencoded')
+      .send('name=john')
       .expect(200)
       .then((res) => {
         expect(res.body.name).to.equal('john')

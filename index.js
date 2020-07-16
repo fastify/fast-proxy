@@ -62,6 +62,9 @@ module.exports = (opts) => {
           } else if (typeof req.body === 'string') {
             body = req.body
             populateHeaders(headers, body, 'text/plain')
+          } else if (headers['content-type'] === 'application/x-www-form-urlencoded') {
+            body = querystring.stringify(req.body)
+            populateHeaders(headers, body, 'application/x-www-form-urlencoded')
           } else {
             body = JSON.stringify(req.body)
             populateHeaders(headers, body, 'application/json')
