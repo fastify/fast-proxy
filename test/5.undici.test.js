@@ -1,9 +1,12 @@
 /* global describe, it */
 'use strict'
-
 const request = require('supertest')
 const bodyParser = require('body-parser')
+const { promisify } = require('util')
 const { expect } = require('chai')
+
+const sleep = promisify(setTimeout)
+
 let gateway, service, close, proxy, gHttpServer
 
 describe('undici', () => {
@@ -11,7 +14,8 @@ describe('undici', () => {
     const fastProxy = require('../index')({
       base: 'http://127.0.0.1:3000',
       undici: {
-        pipelining: 10
+        pipelining: 10,
+        requestTimeout: 100
       }
     })
     close = fastProxy.close
@@ -45,6 +49,10 @@ describe('undici', () => {
       res.setHeader('x-agent', 'fast-proxy')
       res.send()
     })
+    service.get('/service/timeout', async (req, res) => {
+      await sleep(200)
+      res.send()
+    })
 
     service.start(3000).then(() => done())
   })
@@ -73,6 +81,12 @@ describe('undici', () => {
       .then((response) => {
         expect(response.headers['x-agent']).to.equal('fast-proxy')
       })
+  })
+
+  it('should 200 on GET /service/timeout', async () => {
+    await request(gHttpServer)
+      .get('/service/timeout')
+      .expect(504)
   })
 
   it('close all', async () => {

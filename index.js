@@ -88,7 +88,7 @@ module.exports = (opts) => {
             if (err.code === 'ECONNREFUSED' || err.code === 'ERR_HTTP2_STREAM_CANCEL') {
               res.statusCode = 503
               res.end('Service Unavailable')
-            } else if (err.code === 'ECONNRESET') {
+            } else if (err.code === 'ECONNRESET' || err.code === 'UND_ERR_REQUEST_TIMEOUT') {
               res.statusCode = 504
               res.end(err.message)
             } else {
