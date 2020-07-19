@@ -9,7 +9,8 @@ const buildRequest = require('./lib/request')
 const {
   filterPseudoHeaders,
   copyHeaders,
-  stripHttp1ConnectionHeaders
+  stripHttp1ConnectionHeaders,
+  filterHeaders
 } = require('./lib/utils')
 
 function populateHeaders (headers, body, contentType) {
@@ -40,7 +41,7 @@ module.exports = (opts) => {
 
       const url = getReqUrl(source || req.url, cache, base, opts)
       const sourceHttp2 = req.httpVersionMajor === 2
-      const headers = { ...sourceHttp2 ? filterPseudoHeaders(req.headers) : req.headers }
+      let headers = { ...sourceHttp2 ? filterPseudoHeaders(req.headers) : req.headers }
       headers['x-forwarded-host'] = req.headers.host
       headers.host = url.hostname
       if (url.port) {
@@ -54,7 +55,9 @@ module.exports = (opts) => {
       // proxy should ignore message body when it's a GET or HEAD request
       // when proxy this request, we should reset the content-length to make it a valid http request
       if (req.method === 'GET' || req.method === 'HEAD') {
-        headers['content-length'] = 0
+        if (headers['content-length']) {
+          headers = filterHeaders(headers, 'content-length')
+        }
       } else {
         if (req.body) {
           if (req.body instanceof Stream) {
