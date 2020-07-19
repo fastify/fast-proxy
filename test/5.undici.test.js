@@ -47,7 +47,7 @@ describe('undici', () => {
     })
     service.get('/service/headers', (req, res) => {
       res.setHeader('x-agent', 'fast-proxy')
-      res.send()
+      res.send(req.headers)
     })
     service.get('/service/timeout', async (req, res) => {
       await sleep(200)
@@ -78,8 +78,11 @@ describe('undici', () => {
     await request(gHttpServer)
       .get('/service/headers')
       .expect(200)
+      .set('content-length', '10')
       .then((response) => {
         expect(response.headers['x-agent']).to.equal('fast-proxy')
+        expect(response.body['content-length']).to.equal(undefined) // content-length is stripped for GET / HEAD requests
+        expect(response.body.host).to.equal('127.0.0.1:3000')
       })
   })
 
