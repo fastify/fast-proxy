@@ -30,7 +30,13 @@ describe('undici', () => {
     gateway = require('restana')()
     gateway.use(bodyParser.json())
     gateway.all('/service/*', function (req, res) {
-      proxy(req, res, req.url, {})
+      proxy(req, res, req.url, {
+        rewriteRequestHeaders (req, headers) {
+          delete headers.connection
+
+          return headers
+        }
+      })
     })
 
     gHttpServer = await gateway.start(8080)
@@ -67,7 +73,7 @@ describe('undici', () => {
     await request(gHttpServer)
       .post('/service/post')
       .set('Content-Type', 'application/json')
-      .send('{"name":"john"}')
+      .send({ name: 'john' })
       .expect(200)
       .then((res) => {
         expect(res.body.name).to.equal('john')
