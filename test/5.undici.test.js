@@ -86,7 +86,7 @@ describe('undici', () => {
       })
   })
 
-  it('should 200 on GET /service/timeout', async () => {
+  it('should 504 on GET /service/timeout', async () => {
     await request(gHttpServer)
       .get('/service/timeout')
       .expect(504)
