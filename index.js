@@ -1,6 +1,5 @@
 'use strict'
 
-const URL = require('url').URL
 const pump = require('pump')
 const lru = require('tiny-lru')
 const querystring = require('querystring')
@@ -10,7 +9,8 @@ const {
   filterPseudoHeaders,
   copyHeaders,
   stripHttp1ConnectionHeaders,
-  filterHeaders
+  filterHeaders,
+  buildURL
 } = require('./lib/utils')
 
 function populateHeaders (headers, body, contentType) {
@@ -170,11 +170,11 @@ function getReqUrl (source, cache, base, opts) {
     const cacheKey = reqBase + source
     url = cache.get(cacheKey)
     if (!url) {
-      url = new URL(source, reqBase)
+      url = buildURL(source, reqBase)
       cache.set(cacheKey, url)
     }
   } else {
-    url = new URL(source, reqBase)
+    url = buildURL(source, reqBase)
   }
 
   return url
