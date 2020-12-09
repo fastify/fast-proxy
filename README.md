@@ -67,6 +67,7 @@ This flag could controls the settings of the undici client, like so:
   }
 ...
 ```
+> See undici demo at: `demos/gateway-undici.js`
 
 #### cacheURLs
 The number of parsed URLs that will be cached. Default: 100.
