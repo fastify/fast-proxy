@@ -1,0 +1,32 @@
+name: ci
+
+on: [push, pull_request]
+
+env:
+  CI: true
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install
+        run: npm install --ignore-scripts
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test
