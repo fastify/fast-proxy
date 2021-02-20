@@ -42,7 +42,8 @@ module.exports = (opts) => {
       const url = getReqUrl(source || req.url, cache, base, opts)
       const sourceHttp2 = req.httpVersionMajor === 2
       let headers = { ...sourceHttp2 ? filterPseudoHeaders(req.headers) : req.headers }
-      headers['x-forwarded-host'] = req.headers.host
+
+      headers['x-forwarded-host'] = headers.host
       headers.host = url.hostname
       if (url.port) {
         headers.host += `:${url.port}`
