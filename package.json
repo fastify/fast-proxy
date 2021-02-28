@@ -34,27 +34,25 @@
   },
   "homepage": "https://github.com/fastify/fast-proxy",
   "devDependencies": {
-    "0http": "^2.5.2",
+    "0http": "^3.0.0",
     "body-parser": "^1.19.0",
-    "chai": "^4.2.0",
-    "fastify": "^3.0.3",
-    "fastify-reply-from": "^3.1.2",
-    "follow-redirects": "^1.13.0",
+    "chai": "^4.3.0",
+    "follow-redirects": "^1.13.3",
     "h2url": "^0.2.0",
     "http-proxy": "^1.18.1",
-    "mocha": "^8.0.1",
-    "nock": "^13.0.2",
+    "mocha": "^8.3.0",
+    "nock": "^13.0.9",
     "nyc": "^15.1.0",
     "pem": "^1.14.4",
-    "restana": "^4.6.2",
-    "standard": "^14.3.4",
-    "supertest": "^4.0.2"
+    "restana": "^4.8.1",
+    "standard": "^16.0.3",
+    "supertest": "^6.1.3"
   },
   "dependencies": {
     "end-of-stream": "^1.4.4",
     "pump": "^3.0.0",
-    "semver": "^7.3.2",
+    "semver": "^7.3.4",
     "tiny-lru": "^7.0.6",
-    "undici": "^1.2.2"
+    "undici": "^3.3.3"
   }
 }

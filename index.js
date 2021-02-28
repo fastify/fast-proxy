@@ -42,7 +42,8 @@ module.exports = (opts) => {
       const url = getReqUrl(source || req.url, cache, base, opts)
       const sourceHttp2 = req.httpVersionMajor === 2
       let headers = { ...sourceHttp2 ? filterPseudoHeaders(req.headers) : req.headers }
-      headers['x-forwarded-host'] = req.headers.host
+
+      headers['x-forwarded-host'] = headers.host
       headers.host = url.hostname
       if (url.port) {
         headers.host += `:${url.port}`
@@ -91,7 +92,7 @@ module.exports = (opts) => {
             if (err.code === 'ECONNREFUSED' || err.code === 'ERR_HTTP2_STREAM_CANCEL') {
               res.statusCode = 503
               res.end('Service Unavailable')
-            } else if (err.code === 'ECONNRESET' || err.code === 'UND_ERR_REQUEST_TIMEOUT') {
+            } else if (err.code === 'ECONNRESET' || err.code === 'UND_ERR_HEADERS_TIMEOUT' || err.code === 'UND_ERR_BODY_TIMEOUT') {
               res.statusCode = 504
               res.end(err.message)
             } else {

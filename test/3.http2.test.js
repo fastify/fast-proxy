@@ -87,6 +87,8 @@ describe('http2', () => {
 
       service.get('/service/headers', (req, res) => {
         res.setHeader('x-agent', 'fast-proxy')
+        res.setHeader('x-forwarded-host', req.headers['x-forwarded-host'])
+
         res.send()
       })
 
@@ -96,10 +98,14 @@ describe('http2', () => {
 
   it('should 200 on GET headers', async () => {
     const { headers } = await h2url.concat({
-      url: 'https://localhost:8080/service/headers'
+      url: 'https://localhost:8080/service/headers',
+      headers: {
+        ':authority': 'nodejs.org:443'
+      }
     })
     expect(headers[':status']).to.equal(200)
     expect(headers['x-agent']).to.equal('fast-proxy')
+    expect(headers['x-forwarded-host']).to.equal('nodejs.org:443')
   })
 
   it('should timeout on GET /service/longop', async () => {
