@@ -15,7 +15,7 @@ describe('undici', () => {
       base: 'http://127.0.0.1:3000',
       undici: {
         pipelining: 10,
-        requestTimeout: 100
+        headersTimeout: 100
       }
     })
     close = fastProxy.close
@@ -57,7 +57,7 @@ describe('undici', () => {
     })
     service.get('/service/timeout', async (req, res) => {
       await sleep(200)
-      res.send()
+      res.send('OK')
     })
 
     service.start(3000).then(() => done())
