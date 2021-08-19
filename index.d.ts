@@ -25,9 +25,9 @@ declare function fastProxy(options?: Options): {
     source: string,
     opts?: {
       base?: string;
-      onResponse?(req: _req, res: _res, stream: Stream): void;
-      rewriteRequestHeaders?(req: _req, headers: { [key as string]: string }): { headers: { [key as string]: string } };
-      rewriteHeaders?(headers: { [key as string]: string }): { headers: { [key as string]: string } };
+      onResponse?(req: Http.IncomingMessage, res: Http.ServerResponse, stream: Stream): void;
+      rewriteRequestHeaders?(req: Http.IncomingMessage, headers: Http.IncomingHttpHeaders): Http.IncomingHttpHeaders;
+      rewriteHeaders?(headers: Http.OutgoingHttpHeaders): Http.OutgoingHttpHeaders;
       request?: Http.RequestOptions;
       queryString?: string;
     }
