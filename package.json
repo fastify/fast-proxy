@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "description": "Forward your HTTP request to another server.",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "lint": "npx standard",
     "test": "nyc mocha test/*.test.js",
@@ -53,6 +54,6 @@
     "pump": "^3.0.0",
     "semver": "^7.3.4",
     "tiny-lru": "^7.0.6",
-    "undici": "^3.3.3"
+    "undici": "^4.4.5"
   }
 }

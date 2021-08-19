@@ -22,7 +22,7 @@ function populateHeaders (headers, body, contentType) {
   }
 }
 
-module.exports = (opts) => {
+module.exports = function fastProxy (opts = {}) {
   const { request, close } = buildRequest({
     ...opts
   })
