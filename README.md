@@ -39,7 +39,7 @@ service.start(3000)
 ```
 
 Using imports:
-```js
+```ts
 import fastProxy from 'fast-proxy'
 
 const { proxy, close } = fastProxy({
