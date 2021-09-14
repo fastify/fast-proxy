@@ -38,6 +38,15 @@ service.get('/service/hi', (req, res) => res.send('Hello World!'))
 service.start(3000)
 ```
 
+Using imports:
+```ts
+import fastProxy from 'fast-proxy'
+
+const { proxy, close } = fastProxy({
+  base: 'http://127.0.0.1:3000'
+})
+```
+
 ## Benchmarks
 Please see: https://github.com/jkyberneees/nodejs-proxy-benchmarks
 
