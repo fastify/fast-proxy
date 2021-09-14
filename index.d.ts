@@ -17,7 +17,6 @@ interface Options {
   rejectUnauthorized?: boolean;
 }
 
-
 declare function fastProxy(options?: Options): {
   proxy(
     originReq: Http.IncomingMessage,
