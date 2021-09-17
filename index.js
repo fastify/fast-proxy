@@ -182,3 +182,5 @@ function getReqUrl (source, cache, base, opts) {
 }
 
 module.exports = fastProxy
+module.exports.default = fastProxy
+module.exports.fastProxy = fastProxy
