@@ -22,7 +22,7 @@ function populateHeaders (headers, body, contentType) {
   }
 }
 
-module.exports = (opts) => {
+function fastProxy (opts = {}) {
   const { request, close } = buildRequest({
     ...opts
   })
@@ -180,3 +180,7 @@ function getReqUrl (source, cache, base, opts) {
 
   return url
 }
+
+module.exports = fastProxy
+module.exports.default = fastProxy
+module.exports.fastProxy = fastProxy
