@@ -82,7 +82,7 @@ This flag could controls the settings of the undici client, like so:
 The number of parsed URLs that will be cached. Default: 100.
 > Use value = `0` to disable the caching mechanism
 
-#### requests.http and requests.https
+#### requests['http:'] and requests['https:']
 Allows to optionally overwrite the internal `http` and `https` client agents implementation. Defaults: [`http`](https://nodejs.org/api/http.html#http_http) and [`https`](https://nodejs.org/api/https.html#https_https).
 
 For example, this could be used to add support for following redirects, like so:
@@ -90,8 +90,8 @@ For example, this could be used to add support for following redirects, like so:
 ```js
 ...
   requests: {
-    http: require('follow-redirects/http'),
-    https: require('follow-redirects/https')
+    'http:': require('follow-redirects/http'),
+    'https:': require('follow-redirects/https')
   }
 ...
 ```
