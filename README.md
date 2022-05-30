@@ -1,5 +1,5 @@
 # fast-proxy
-![CI](https://github.com/fastify/releasify/workflows/CI/badge.svg)
+![CI](https://github.com/fastify/fast-proxy/workflows/CI/badge.svg)
 [![NPM version](https://img.shields.io/npm/v/fast-proxy.svg?style=flat)](https://www.npmjs.com/package/fast-proxy)  
 
 Node.js framework agnostic library that enables you to forward an http request to another HTTP server. 
