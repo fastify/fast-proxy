@@ -31,9 +31,6 @@
   "bugs": {
     "url": "https://github.com/fastify/fast-proxy/issues"
   },
-  "engines": {
-    "node": ">=8.0.0"
-  },
   "homepage": "https://github.com/fastify/fast-proxy",
   "devDependencies": {
     "0http": "^3.1.1",
