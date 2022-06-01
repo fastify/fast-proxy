@@ -44,7 +44,7 @@
     "nyc": "^15.1.0",
     "pem": "^1.14.4",
     "restana": "^4.9.1",
-    "standard": "^16.0.3",
+    "standard": "^17.0.0",
     "supertest": "^6.1.6"
   },
   "dependencies": {
