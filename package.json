@@ -51,7 +51,7 @@
     "end-of-stream": "^1.4.4",
     "pump": "^3.0.0",
     "semver": "^7.3.5",
-    "tiny-lru": "^7.0.6",
+    "tiny-lru": "^8.0.2",
     "undici": "^5.4.0"
   }
 }
