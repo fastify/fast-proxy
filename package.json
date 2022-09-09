@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "end-of-stream": "^1.4.4",
+    "fast-querystring": "^1.0.0",
     "pump": "^3.0.0",
     "semver": "^7.3.5",
     "tiny-lru": "^9.0.2",

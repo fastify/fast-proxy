@@ -29,6 +29,7 @@ function fastProxy (opts = {}) {
 
   const cache = getCacheStorage(opts.cacheURLs)
   const base = opts.base
+  const qsModule = opts.queryString || require('fast-querystring')
 
   return {
     close,
@@ -49,7 +50,7 @@ function fastProxy (opts = {}) {
         headers.host += `:${url.port}`
       }
 
-      const qs = getQueryString(url.search, req.url, opts)
+      const qs = getQueryString(qsModule, url.search, req.url, opts)
 
       let body = null
       // according to https://tools.ietf.org/html/rfc2616#section-4.3
@@ -67,7 +68,7 @@ function fastProxy (opts = {}) {
             body = req.body
             populateHeaders(headers, body, 'text/plain')
           } else if (headers['content-type'] === 'application/x-www-form-urlencoded') {
-            body = querystring.stringify(req.body)
+            body = qs.stringify(req.body)
             populateHeaders(headers, body, 'application/x-www-form-urlencoded')
           } else {
             body = JSON.stringify(req.body)
@@ -129,9 +130,9 @@ function fastProxy (opts = {}) {
   }
 }
 
-function getQueryString (search, reqUrl, opts) {
+function getQueryString (qs, search, reqUrl, opts) {
   if (opts.queryString) {
-    return '?' + querystring.stringify(opts.queryString)
+    return '?' + qs.stringify(opts.queryString)
   }
 
   if (search.length > 0) {
