@@ -3,6 +3,11 @@ import * as Https from 'https';
 import { Stream } from 'pump';
 import * as Undici from 'undici';
 
+interface QueryStringModule {
+  stringify(value: any): string;
+  parse(value: string): any;
+}
+
 interface Options {
   base?: string;
   http2?: boolean;
@@ -15,6 +20,7 @@ interface Options {
   keepAliveMsecs?: number;
   maxSockets?: number;
   rejectUnauthorized?: boolean;
+  queryString?: QueryStringModule
 }
 
 declare function fastProxy(options?: Options): {
