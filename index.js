@@ -1,7 +1,7 @@
 'use strict'
 
 const pump = require('pump')
-const lru = require('tiny-lru')
+const lru = require('tiny-lru').lru
 const querystring = require('querystring')
 const Stream = require('stream')
 const buildRequest = require('./lib/request')
