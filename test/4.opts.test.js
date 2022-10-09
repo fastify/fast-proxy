@@ -5,7 +5,7 @@ const request = require('supertest')
 const bodyParser = require('body-parser')
 const expect = require('chai').expect
 const pump = require('pump')
-const querystring = require('querystring')
+const queryString = require('querystring')
 let gateway, service, close, proxy, gHttpServer
 
 const nock = require('nock')
@@ -21,10 +21,7 @@ describe('fast-proxy smoke', () => {
   it('init', async () => {
     const fastProxy = require('../index')({
       base: 'http://127.0.0.1:3000',
-      queryString: {
-        stringify: (value) => querystring.stringify(value),
-        parse: (value) => querystring.parse(value)
-      }
+      queryString
     })
     close = fastProxy.close
     proxy = fastProxy.proxy
