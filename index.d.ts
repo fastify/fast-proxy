@@ -20,7 +20,7 @@ interface Options {
   keepAliveMsecs?: number;
   maxSockets?: number;
   rejectUnauthorized?: boolean;
-  queryString?: QueryStringModule
+  queryString?: QueryStringModule;
 }
 
 declare function fastProxy(options?: Options): {
