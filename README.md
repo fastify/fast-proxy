@@ -59,17 +59,17 @@ Set the base URL for all the forwarded requests. Will be required if `http2` is 
 Note that _path will be discarded_.
 
 #### queryString
-Set the query string parser and stringifier. By default `fast-proxy` uses 
+Set the query string parser and stringifier. By default `fast-proxy` uses the
 [fast-querystring](https://npmjs.com/package/fast-querystring) module. Configuration can be changed like so:
 
 ```js
-...
+{
   base: 'http://localhost:3001/',
   queryString: {
     parse: (value) => qs.parse(value),
     stringify: (value) => qs.stringify(value),
   }
-...
+}
 ```
 
 #### http2
