@@ -67,7 +67,7 @@ function fastProxy (opts = {}) {
             body = req.body
             populateHeaders(headers, body, 'text/plain')
           } else if (headers['content-type'] === 'application/x-www-form-urlencoded') {
-            body = qs.stringify(req.body)
+            body = qsModule.stringify(req.body)
             populateHeaders(headers, body, 'application/x-www-form-urlencoded')
           } else {
             body = JSON.stringify(req.body)
