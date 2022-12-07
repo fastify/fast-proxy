@@ -6,6 +6,7 @@ const bodyParser = require('body-parser')
 const expect = require('chai').expect
 let gateway, service, close, proxy, gHttpServer
 const pem = require('pem')
+const serviceKey = require('fs').readFileSync(__dirname + '/private_key.pem').toString()
 
 describe('https', () => {
   it('init', async () => {
@@ -38,6 +39,7 @@ describe('https', () => {
   it('init & start remote service', (done) => {
     // init remote service
     pem.createCertificate({
+      serviceKey,
       days: 1,
       selfSigned: true
     }, (_, keys) => {

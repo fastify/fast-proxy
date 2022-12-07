@@ -7,6 +7,7 @@ const expect = require('chai').expect
 let gateway, service, close, proxy
 const pem = require('pem')
 const pump = require('pump')
+const serviceKey = require('fs').readFileSync(__dirname + '/private_key.pem').toString()
 
 describe('http2', () => {
   it('init should fail if base is missing', (done) => {
@@ -37,6 +38,7 @@ describe('http2', () => {
   it('init & start gateway', (done) => {
     // init gateway
     pem.createCertificate({
+      serviceKey,
       days: 1,
       selfSigned: true
     }, (_, keys) => {
@@ -64,6 +66,7 @@ describe('http2', () => {
   it('init & start remote service', (done) => {
     // init remote service
     pem.createCertificate({
+      serviceKey,
       days: 1,
       selfSigned: true
     }, (_, keys) => {
