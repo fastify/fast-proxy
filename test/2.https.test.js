@@ -6,7 +6,7 @@ const bodyParser = require('body-parser')
 const expect = require('chai').expect
 let gateway, service, close, proxy, gHttpServer
 const selfsigned = require('selfsigned')
-const pems = selfsigned.generate({}, { days: 1, keySize: 4096 });
+const pems = selfsigned.generate({}, { days: 1, keySize: 4096 })
 const key = pems.private
 const cert = pems.cert
 
