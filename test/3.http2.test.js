@@ -6,8 +6,12 @@ const bodyParser = require('body-parser')
 const expect = require('chai').expect
 let gateway, service, close, proxy
 const pump = require('pump')
-const { cert, private: key } = require('selfsigned')
-  .generate({}, { days: 1, keySize: 4096 })
+const {
+  certificate: cert,
+  privateKey: key
+} = require('self-cert')({
+  expires: new Date(Date.now() + 24 * 60 * 60 * 1000)
+})
 
 describe('http2', () => {
   it('init should fail if base is missing', (done) => {
