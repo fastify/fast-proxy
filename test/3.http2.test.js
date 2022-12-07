@@ -7,7 +7,11 @@ const expect = require('chai').expect
 let gateway, service, close, proxy
 const pem = require('pem')
 const pump = require('pump')
-const serviceKey = require('fs').readFileSync(__dirname + '/private_key.pem').toString()
+const fs = require('fs')
+const path = require('path')
+const serviceKey = fs
+  .readFileSync(path.join(__dirname, '/private_key.pem'))
+  .toString()
 
 describe('http2', () => {
   it('init should fail if base is missing', (done) => {

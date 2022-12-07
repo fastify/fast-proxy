@@ -6,7 +6,11 @@ const bodyParser = require('body-parser')
 const expect = require('chai').expect
 let gateway, service, close, proxy, gHttpServer
 const pem = require('pem')
-const serviceKey = require('fs').readFileSync(__dirname + '/private_key.pem').toString()
+const fs = require('fs')
+const path = require('path')
+const serviceKey = fs
+  .readFileSync(path.join(__dirname, '/private_key.pem'))
+  .toString()
 
 describe('https', () => {
   it('init', async () => {
