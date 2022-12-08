@@ -5,7 +5,12 @@ const request = require('supertest')
 const bodyParser = require('body-parser')
 const expect = require('chai').expect
 let gateway, service, close, proxy, gHttpServer
-const pem = require('pem')
+const {
+  certificate: cert,
+  privateKey: key
+} = require('self-cert')({
+  expires: new Date(Date.now() + 24 * 60 * 60 * 1000)
+})
 
 describe('https', () => {
   it('init', async () => {
@@ -37,34 +42,29 @@ describe('https', () => {
 
   it('init & start remote service', (done) => {
     // init remote service
-    pem.createCertificate({
-      days: 1,
-      selfSigned: true
-    }, (_, keys) => {
-      service = require('restana')({
-        server: require('https').createServer({
-          key: keys.serviceKey,
-          cert: keys.certificate
-        })
+    service = require('restana')({
+      server: require('https').createServer({
+        key,
+        cert
       })
-      service.use(bodyParser.json())
-
-      service.get('/service/get', (req, res) => res.send('Hello World!'))
-      service.get('/service/longop', (req, res) => {
-        setTimeout(() => {
-          res.send('Hello World!')
-        }, 500)
-      })
-      service.post('/service/post', (req, res) => {
-        res.send(req.body)
-      })
-      service.get('/service/headers', (req, res) => {
-        res.setHeader('x-agent', 'fast-proxy')
-        res.send()
-      })
-
-      service.start(3000).then(() => done())
     })
+    service.use(bodyParser.json())
+
+    service.get('/service/get', (req, res) => res.send('Hello World!'))
+    service.get('/service/longop', (req, res) => {
+      setTimeout(() => {
+        res.send('Hello World!')
+      }, 500)
+    })
+    service.post('/service/post', (req, res) => {
+      res.send(req.body)
+    })
+    service.get('/service/headers', (req, res) => {
+      res.setHeader('x-agent', 'fast-proxy')
+      res.send()
+    })
+
+    service.start(3000).then(() => done())
   })
 
   it('should 200 on GET to valid remote endpoint', async () => {
