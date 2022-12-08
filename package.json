@@ -3,10 +3,12 @@
   "version": "2.1.0",
   "description": "Forward your HTTP request to another server.",
   "main": "index.js",
-  "types": "index.d.ts",
+  "types": "types/index.d.ts",
   "scripts": {
-    "lint": "npx standard",
-    "test": "nyc mocha test/*.test.js",
+    "lint": "standard",
+    "test": "npm run test:unit && npm run test:typescript",
+    "test:unit": "nyc mocha test/*.test.js",
+    "test:typescript": "tsd",
     "bench": "( node benchmark/service.js & node benchmark/fast-proxy-0http-gateway.js & (sleep 5 && wrk -t8 -c8 -d30s http://127.0.0.1:8080/service/hi) )"
   },
   "repository": {
@@ -22,7 +24,7 @@
   "files": [
     "LICENSE",
     "README.md",
-    "index.d.ts",
+    "types/index.d.ts",
     "index.js",
     "lib/"
   ],
@@ -33,6 +35,7 @@
   },
   "homepage": "https://github.com/fastify/fast-proxy",
   "devDependencies": {
+    "@types/node": "^18.11.10",
     "0http": "^3.1.1",
     "body-parser": "^1.19.0",
     "chai": "^4.3.4",
@@ -45,7 +48,8 @@
     "restana": "^4.9.1",
     "self-cert": "^2.0.0",
     "standard": "^17.0.0",
-    "supertest": "^6.1.6"
+    "supertest": "^6.1.6",
+    "tsd": "^0.25.0"
   },
   "dependencies": {
     "end-of-stream": "^1.4.4",
