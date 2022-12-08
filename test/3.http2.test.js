@@ -5,8 +5,13 @@ const h2url = require('h2url')
 const bodyParser = require('body-parser')
 const expect = require('chai').expect
 let gateway, service, close, proxy
-const pem = require('pem')
 const pump = require('pump')
+const {
+  certificate: cert,
+  privateKey: key
+} = require('self-cert')({
+  expires: new Date(Date.now() + 24 * 60 * 60 * 1000)
+})
 
 describe('http2', () => {
   it('init should fail if base is missing', (done) => {
@@ -36,64 +41,55 @@ describe('http2', () => {
 
   it('init & start gateway', (done) => {
     // init gateway
-    pem.createCertificate({
-      days: 1,
-      selfSigned: true
-    }, (_, keys) => {
-      gateway = require('restana')({
-        server: require('http2').createSecureServer({
-          key: keys.serviceKey,
-          cert: keys.certificate
-        })
-      })
 
-      gateway.all('/service/*', function (req, res) {
-        proxy(req, res, req.url, {
-          request: {
-            timeout: 100
-          }
-        })
+    gateway = require('restana')({
+      server: require('http2').createSecureServer({
+        key,
+        cert
       })
+    })
 
-      gateway.start(8080).then(server => {
-        done()
+    gateway.all('/service/*', function (req, res) {
+      proxy(req, res, req.url, {
+        request: {
+          timeout: 100
+        }
       })
+    })
+
+    gateway.start(8080).then(server => {
+      done()
     })
   })
 
   it('init & start remote service', (done) => {
     // init remote service
-    pem.createCertificate({
-      days: 1,
-      selfSigned: true
-    }, (_, keys) => {
-      service = require('restana')({
-        server: require('http2').createSecureServer({
-          key: keys.serviceKey,
-          cert: keys.certificate
-        })
+    service = require('restana')({
+      server: require('http2').createSecureServer({
+        key,
+        cert
       })
-      service.use(bodyParser.text())
-
-      service.post('/service/post', (req, res) => {
-        pump(req, res)
-      })
-
-      service.get('/service/longop', (req, res) => {
-        setTimeout(() => {
-          res.send('Hello World!')
-        }, 500)
-      })
-
-      service.get('/service/headers', (req, res) => {
-        res.setHeader('x-agent', 'fast-proxy')
-        res.setHeader('x-forwarded-host', req.headers['x-forwarded-host'])
-
-        res.send()
-      })
-
-      service.start(3000).then(() => done())
     })
+    service.use(bodyParser.text())
+
+    service.post('/service/post', (req, res) => {
+      pump(req, res)
+    })
+
+    service.get('/service/longop', (req, res) => {
+      setTimeout(() => {
+        res.send('Hello World!')
+      }, 500)
+    })
+
+    service.get('/service/headers', (req, res) => {
+      res.setHeader('x-agent', 'fast-proxy')
+      res.setHeader('x-forwarded-host', req.headers['x-forwarded-host'])
+
+      res.send()
+    })
+
+    service.start(3000).then(() => done())
   })
 
   it('should 200 on GET headers', async () => {
