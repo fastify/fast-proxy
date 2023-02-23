@@ -30,7 +30,7 @@ declare namespace fastProxy {
   export interface FastProxyOptions {
     base?: string;
     http2?: boolean;
-    undici?: Undici.Pool.Options;
+    undici?: boolean | Undici.Pool.Options;
     cacheURLs?: number;
     requests?: {
       http?: Http.Agent,
