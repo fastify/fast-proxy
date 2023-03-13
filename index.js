@@ -8,7 +8,6 @@ const {
   filterPseudoHeaders,
   copyHeaders,
   stripHttp1ConnectionHeaders,
-  filterHeaders,
   buildURL
 } = require('./lib/utils')
 
@@ -53,11 +52,11 @@ function fastProxy (opts = {}) {
 
       let body = null
       // according to https://tools.ietf.org/html/rfc2616#section-4.3
-      // proxy should ignore message body when it's a GET or HEAD request
+      // proxy should ignore message body when it's a GET, HEAD or OPTIONS request
       // when proxy this request, we should reset the content-length to make it a valid http request
-      if (req.method === 'GET' || req.method === 'HEAD') {
-        if (headers['content-length']) {
-          headers = filterHeaders(headers, 'content-length')
+      if (req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS') {
+        if (headers.hasOwnProperty('content-length')) {
+          delete headers['content-length']
         }
       } else {
         if (req.body) {
