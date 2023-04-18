@@ -88,7 +88,7 @@ function fastProxy (opts = {}) {
       }
       request(reqParams, (err, response) => {
         if (err) {
-          if (!res.sent) {
+          if (!res.sent || !res.writableFinished) {
             if (err.code === 'ECONNREFUSED' || err.code === 'ERR_HTTP2_STREAM_CANCEL') {
               res.statusCode = 503
               res.end('Service Unavailable')
