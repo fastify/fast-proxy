@@ -34,7 +34,6 @@ describe('fast-proxy smoke', () => {
       proxy(req, res, req.url, {})
     })
 
-
     gHttpServer = await gateway.start(8080)
   })
 
