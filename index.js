@@ -90,7 +90,7 @@ function fastProxy (opts = {}) {
         if (err) {
           // check if response has already been sent and all data has been flushed 
           // before configuring error response headers
-          if (!res.sent || !res.writableFinished) {
+          if (res.sent === false || res.writableFinished === false) {
             if (err.code === 'ECONNREFUSED' || err.code === 'ERR_HTTP2_STREAM_CANCEL') {
               res.statusCode = 503
               res.end('Service Unavailable')
