@@ -25,8 +25,8 @@ describe('fast-proxy smoke', () => {
     gateway.use(bodyParser.urlencoded({ extended: true }))
     gateway.use(bodyParser.text())
 
-    gateway.get('/service/flushed', function(req, res) {
-      res.end();
+    gateway.get('/service/flushed', function (req, res) {
+      res.end()
       proxy(req, res, req.url, {})
     })
 
@@ -52,7 +52,7 @@ describe('fast-proxy smoke', () => {
   it('should 200 when proxy errors after response has been sent', async () => {
     await request(gHttpServer)
       .get('/service/flushed')
-      .expect(200);
+      .expect(200)
   })
 
   it('init & start remote service', async () => {
