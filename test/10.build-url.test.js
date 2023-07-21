@@ -27,6 +27,14 @@ describe('buildURL', () => {
     expect(url.href).to.equal('http://localhost/hi')
   })
 
+  it('should not strip double slashes from query parameters', function () {
+    const url = buildURL('/hi?bye=https%3A//example.com', 'http://localhost')
+
+    expect(url.origin).to.equal('http://localhost')
+    expect(url.pathname).to.equal('/hi')
+    expect(url.href).to.equal('http://localhost/hi?bye=https%3A//example.com')
+  })
+
   it('should produce valid URL (1 param)', function () {
     const url = buildURL('http://localhost/hi')
 
