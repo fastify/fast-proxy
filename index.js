@@ -38,6 +38,7 @@ function fastProxy (opts = {}) {
       const onResponse = opts.onResponse
       const rewriteHeaders = opts.rewriteHeaders || rewriteHeadersNoOp
       const rewriteRequestHeaders = opts.rewriteRequestHeaders || rewriteRequestHeadersNoOp
+      const onError = opts.onError
 
       const url = getReqUrl(source || req.url, cache, base, opts)
       const sourceHttp2 = req.httpVersionMajor === 2
@@ -88,6 +89,13 @@ function fastProxy (opts = {}) {
       }
       request(reqParams, (err, response) => {
         if (err) {
+
+          // allow for errors to be passed to a custom callback
+          if (onError) {
+            onError(err, req, res)
+            return
+          }
+
           // check if response has already been sent and all data has been flushed
           // before configuring error response headers
           if (res.sent === false || res.writableFinished === false) {
