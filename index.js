@@ -89,7 +89,6 @@ function fastProxy (opts = {}) {
       }
       request(reqParams, (err, response) => {
         if (err) {
-
           // allow for errors to be passed to a custom callback
           if (onError) {
             onError(err, req, res)
