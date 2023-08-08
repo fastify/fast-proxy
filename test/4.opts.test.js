@@ -47,7 +47,7 @@ describe('fast-proxy smoke', () => {
         },
         onError (err, req, res) {
           res.statusCode = 418
-          res.send(err)
+          res.send(err.code)
         }
       })
     })
