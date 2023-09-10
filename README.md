@@ -77,7 +77,7 @@ Set to `true` if target server is `http2` enabled.
 
 #### undici
 Set to `true` to use [undici](https://github.com/mcollina/undici)
-instead of `require('http')`. Enabling this flag should guarantee
+instead of `require('node:http')`. Enabling this flag should guarantee
 20-50% more throughput.
 
 This flag could controls the settings of the undici client, like so:

@@ -43,7 +43,7 @@ describe('http2', () => {
     // init gateway
 
     gateway = require('restana')({
-      server: require('http2').createSecureServer({
+      server: require('node:http2').createSecureServer({
         key,
         cert
       })
@@ -65,7 +65,7 @@ describe('http2', () => {
   it('init & start remote service', (done) => {
     // init remote service
     service = require('restana')({
-      server: require('http2').createSecureServer({
+      server: require('node:http2').createSecureServer({
         key,
         cert
       })

@@ -5,7 +5,7 @@ const request = require('supertest')
 const bodyParser = require('body-parser')
 const expect = require('chai').expect
 const pump = require('pump')
-const queryString = require('querystring')
+const queryString = require('node:querystring')
 let gateway, service, close, proxy, gHttpServer
 
 const nock = require('nock')
