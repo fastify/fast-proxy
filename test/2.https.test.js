@@ -43,7 +43,7 @@ describe('https', () => {
   it('init & start remote service', (done) => {
     // init remote service
     service = require('restana')({
-      server: require('https').createServer({
+      server: require('node:https').createServer({
         key,
         cert
       })

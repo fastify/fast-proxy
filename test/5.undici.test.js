@@ -2,7 +2,7 @@
 'use strict'
 const request = require('supertest')
 const bodyParser = require('body-parser')
-const { promisify } = require('util')
+const { promisify } = require('node:util')
 const { expect } = require('chai')
 
 const sleep = promisify(setTimeout)

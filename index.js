@@ -2,7 +2,7 @@
 
 const pump = require('pump')
 const lru = require('tiny-lru').lru
-const Stream = require('stream')
+const Stream = require('node:stream')
 const buildRequest = require('./lib/request')
 const {
   filterPseudoHeaders,
