@@ -50,7 +50,7 @@
     "self-cert": "^2.0.0",
     "standard": "^17.0.0",
     "supertest": "^6.1.6",
-    "tsd": "^0.29.0"
+    "tsd": "^0.30.0"
   },
   "dependencies": {
     "end-of-stream": "^1.4.4",
