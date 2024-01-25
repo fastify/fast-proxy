@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:fastify/fast-proxy.git"
+    "url": "git+ssh://git@github.com/fastify/fast-proxy.git"
   },
   "keywords": [
     "http",
