@@ -4,6 +4,7 @@ const pump = require('pump')
 const lru = require('tiny-lru').lru
 const Stream = require('node:stream')
 const buildRequest = require('./lib/request')
+
 const {
   filterPseudoHeaders,
   copyHeaders,
@@ -42,6 +43,15 @@ function fastProxy (opts = {}) {
       const url = getReqUrl(source || req.url, cache, base, opts)
       const sourceHttp2 = req.httpVersionMajor === 2
       let headers = { ...sourceHttp2 ? filterPseudoHeaders(req.headers) : req.headers }
+
+      if (!headers.host) {
+        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Host
+        // @TODO: Should add performance-aware host header value validation(regex-based) as a further step?
+        res.statusCode = 400
+        res.end()
+
+        return
+      }
 
       headers['x-forwarded-host'] = headers.host
       headers.host = url.hostname
