@@ -17,6 +17,10 @@ nock('http://dev.com')
     url: 'http://dev.com'
   })
 
+nock('http://dev.error')
+  .get('/service/error')
+  .replyWithError('Error')
+
 describe('fast-proxy smoke', () => {
   it('init', async () => {
     const fastProxy = require('../index')({
@@ -40,6 +44,10 @@ describe('fast-proxy smoke', () => {
         queryString: { age: 33 },
         onResponse (req, res, stream) {
           pump(stream, res)
+        },
+        onError (err, req, res) {
+          res.statusCode = 418
+          res.send(err.code)
         }
       })
     })
@@ -97,6 +105,15 @@ describe('fast-proxy smoke', () => {
     await request(gHttpServer)
       .get('/service/302')
       .expect(302)
+  })
+
+  it('should allow for errors to be handled', async () => {
+    await request(gHttpServer)
+      .get('/service/error')
+      .set('base', 'http://dev.com')
+      .then(response => {
+        expect(response.statusCode).to.equal(418)
+      })
   })
 
   it('close all', async () => {

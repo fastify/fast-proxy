@@ -152,6 +152,9 @@ Called when an http response is received from the source.
 The default behavior is `pump(stream, res)`, which will be disabled if the
 option is specified.
 
+##### onError(err, req, res)
+Called when an error is thrown from the source. If this option is specified, the default error handling will not be applied.
+
 ##### rewriteRequestHeaders(req, headers)
 Called to rewrite the headers of the request, before them being sent to the downstream server. 
 It must return the new headers object.
